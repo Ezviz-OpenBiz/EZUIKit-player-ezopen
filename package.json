@@ -1,6 +1,6 @@
 {
   "name": "@ezuikit/player-ezopen",
-  "version": "8.2.5-beta.3",
+  "version": "8.2.6-alpha.1",
   "description": "萤石ezopne协议播放器",
   "main": "dist/index.js",
   "umd": "dist/index.umd.js",
@@ -34,5 +34,13 @@
     "eventemitter3": "^5.0.1",
     "screenfull": "^5.2.0",
     "ua-parser-js": "1.0.37"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ezviz-OpenBiz/EZUIKit-player-ezopen.git"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }
