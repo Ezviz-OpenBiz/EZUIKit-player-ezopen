@@ -32,7 +32,6 @@ jobs:
       - name: Install dependencies
         run: |
           pnpm install --no-frozen-lockfile
-          pnpm run build
 
       - name: Check file versions
         working-directory: ./components
