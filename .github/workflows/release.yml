@@ -4,7 +4,7 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 permissions:
   id-token: write # Required for OIDC
@@ -34,7 +34,6 @@ jobs:
           pnpm install --no-frozen-lockfile
 
       - name: Check file versions
-        working-directory: ./components
         run: |
           files="dist/index.js dist/index.esm.js package.json"
 
@@ -72,7 +71,6 @@ jobs:
 
       # 获取 tag 的版本类型（仅支持 正式版和beta版）
       - name: Determine release tag
-        working-directory: ./components
         id: determine_tag
         run: |
           TAG=$(echo "${GITHUB_REF}" | sed 's/refs\/tags\/\(.*\)/\1/')
@@ -91,5 +89,4 @@ jobs:
       #   run: pnpm run build
       # 发布npm 发布前执行了prepublishOnly
       - name: Publish npm
-        working-directory: ./components
         run: npm publish --tag ${{ steps.determine_tag.outputs.tag }} --access public
