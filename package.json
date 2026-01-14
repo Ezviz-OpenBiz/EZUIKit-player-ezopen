@@ -1,6 +1,6 @@
 {
   "name": "@ezuikit/player-ezopen",
-  "version": "8.2.5-beta.7",
+  "version": "8.2.5-beta.8",
   "description": "萤石ezopne协议播放器",
   "main": "dist/index.js",
   "umd": "dist/index.umd.js",
@@ -24,7 +24,7 @@
   "author": "Ezviz-OpenBiz",
   "license": "MIT",
   "dependencies": {
-    "@ezuikit/player-plugin-record": "8.2.5-beta.7",
+    "@ezuikit/player-plugin-record": "8.2.5-beta.8",
     "@ezuikit/utils-i18n": "2.0.0",
     "@ezuikit/utils-logger": "2.0.0",
     "@ezuikit/utils-service": "1.0.1",
