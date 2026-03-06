@@ -1,6 +1,6 @@
 {
   "name": "@ezuikit/player-ezopen",
-  "version": "8.2.5",
+  "version": "9.0.1-beta.1",
   "description": "萤石ezopne协议播放器",
   "main": "dist/index.js",
   "umd": "dist/index.umd.js",

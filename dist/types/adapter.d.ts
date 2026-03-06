@@ -70,6 +70,36 @@ interface IFrameInfo {
     minute: number;
     second: number;
 }
+/**
+ * WebSocket 重连配置
+ */
+interface ReconnectConfig {
+    /**
+     * 是否启用自动重连
+     * @default true
+     */
+    enabled?: boolean;
+    /**
+     * 最大重试次数
+     * @default 3
+     */
+    maxRetry?: number;
+    /**
+     * 重试延迟时间（毫秒）
+     * @default 1500
+     */
+    retryDelay?: number;
+    /**
+     * 数据流超时时间（毫秒）- 超过此时间未收到数据则触发重连
+     * @default 10000
+     */
+    dataTimeout?: number;
+    /**
+     * 数据流检测间隔（毫秒）
+     * @default 3000
+     */
+    dataCheckInterval?: number;
+}
 
 interface IResult<T> {
     data?: T;
@@ -732,6 +762,8 @@ interface EZopenPlayerOptions extends PlayerOptions {
     };
     disableRenderPrivateData?: boolean | true;
     decodeEngine?: number | 1;
+    /**  WebSocket 重连配置 */
+    reconnect?: ReconnectConfig;
 }
 declare class EZopenPlayer extends EventEmitter {
     _options: EZopenPlayerOptions;
@@ -783,6 +815,10 @@ declare class EZopenPlayer extends EventEmitter {
             seek: string;
             close: string;
             error: string;
+            reconnecting: string;
+            reconnectSuccess: string;
+            reconnectFailed: string;
+            dataTimeout: string;
         };
         CALLBACK: {
             pluginErrorHandler: string;
@@ -799,7 +835,7 @@ declare class EZopenPlayer extends EventEmitter {
         FECCorrect: {
             setFEC2DParam: string;
         };
-        streamInfoCB: string; /** 全屏节点 */
+        streamInfoCB: string;
     };
     logger: LoggerCls;
     i18n: I18n__default;
