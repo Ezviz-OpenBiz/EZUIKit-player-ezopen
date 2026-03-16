@@ -1020,6 +1020,7 @@ declare class EZopenPlayer extends EventEmitter {
             playURL: string;
         };
     };
+    _reconnectState: any;
     __fCallback: Zoom3DCallback;
     __b3DZoom: boolean;
     pluginManager: PluginManager;
