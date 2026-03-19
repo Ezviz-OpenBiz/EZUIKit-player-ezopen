@@ -100,6 +100,14 @@ interface ReconnectConfig {
      */
     dataCheckInterval?: number;
 }
+interface IBufferItem {
+    /** 片段数据  */
+    buf: Uint8Array;
+    /** 片段 url */
+    url: string;
+    /** 片段时长 */
+    duration: number;
+}
 
 interface IResult<T> {
     data?: T;
@@ -760,10 +768,13 @@ interface EZopenPlayerOptions extends PlayerOptions {
         ezopenParams?: Record<string, any>;
         wsParams?: string | Record<string, any>;
     };
+    /** 禁止渲染私有数据, 仅高性能版本支持（因为v1 本身不支持），仅支持初始化时配置 */
     disableRenderPrivateData?: boolean | true;
     decodeEngine?: number | 1;
     /**  WebSocket 重连配置 */
     reconnect?: ReconnectConfig;
+    isHls?: boolean;
+    isLive?: boolean;
 }
 declare class EZopenPlayer extends EventEmitter {
     _options: EZopenPlayerOptions;
@@ -845,6 +856,8 @@ declare class EZopenPlayer extends EventEmitter {
      * v9.x 中会移除， 请使用 player.on, emit.emit, player.off, player.once, player.removeAllListeners
      */
     event: any;
+    isHls: boolean;
+    isLive: boolean;
     initializing: boolean;
     loading: boolean;
     /** 播放速度 */
@@ -897,6 +910,9 @@ declare class EZopenPlayer extends EventEmitter {
     __b3DZoom: boolean;
     pluginManager: PluginManager;
     _playerWindow: PlayerWindow;
+    /** 存储 hls 片段数据 */
+    _bufferList: IBufferItem[];
+    _hlsBufferShiftInterval: number | null;
     constructor(options: EZopenPlayerOptions);
     get width(): number;
     get height(): number;
@@ -909,7 +925,7 @@ declare class EZopenPlayer extends EventEmitter {
     play(options?: Partial<Pick<EZopenPlayerOptions, 'url' | 'accessToken'>>): Promise<unknown>;
     _wss_play(szUrl: string, oParams?: {
         playURL: string;
-    }, iWndNum?: number): Promise<unknown>;
+    }): Promise<unknown>;
     /**
      * 暂停播放 并断流???
      * @param {boolean} bool 是否断流
@@ -1104,7 +1120,7 @@ declare class EZopenPlayer extends EventEmitter {
     /**
      * @description 设置抗锯齿开关
      */
-    setAntialias(flag: boolean): any;
+    setAntialias(flag: 0 | 1): any;
     /**
      * @description 设置全局基准时间戳
      * @param {GlobalBaseTimeParams} params
@@ -1135,6 +1151,7 @@ declare class StreamClient {
     private _streamClient;
     _streamUUID: string;
     constructor(player: EZopenPlayer);
+    private _getStreamClientFactory;
     /**
      * @description 开流, 此时设备的流还没有发出来
      * @param {string} szUrl 取流路径，如ws://hostname:port/channel
@@ -1211,12 +1228,9 @@ declare class JSPlugin {
      *
      * @param {*} szUrl  "示例：wss://jsdecoder-aeye.hwwt2.com:443"
      * @param {*} oParams  "示例： {playURL: "/live?dev=F99467170&chn=9&stream=1&ssn=ot.9oovv27v00lck3ft0krfw61n8ugr4j5b-1ao1cqq1fm-1od8d0d-h1lnhi0w0&auth=1&biz=4&cln=100"}"
-     * @param {*} iWndNum
-     * @param {*} szStartTime
-     * @param {*} szStopTime
      * @returns
      */
-    JS_Play(szUrl: any, oParams: any, iWndNum: any, szStartTime: any, szStopTime: any): Promise<unknown>;
+    JS_Play(szUrl?: any, oParams?: any): Promise<unknown>;
     JS_SetSecretKey(iWndNum: any, secretKey: any): void;
     secretKey: any;
     JS_OpenSound(): number;
@@ -1314,10 +1328,10 @@ declare class JSPlugin {
     JS_SetGlobalBaseTime(params: any): code;
     /**
      * @description 设置抗锯齿
-     * @param {boolean} flag 抗锯齿开关
+     * @param {0 | 1} flag 抗锯齿开关
      * @returns {code} 0:成功，非0：错误码
      */
-    JS_SetAntialias(flag: boolean): code;
+    JS_SetAntialias(flag: 0 | 1): code;
 }
 
 export { JSPlugin as default };
