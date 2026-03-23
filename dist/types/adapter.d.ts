@@ -70,44 +70,6 @@ interface IFrameInfo {
     minute: number;
     second: number;
 }
-/**
- * WebSocket 重连配置
- */
-interface ReconnectConfig {
-    /**
-     * 是否启用自动重连
-     * @default true
-     */
-    enabled?: boolean;
-    /**
-     * 最大重试次数
-     * @default 3
-     */
-    maxRetry?: number;
-    /**
-     * 重试延迟时间（毫秒）
-     * @default 1500
-     */
-    retryDelay?: number;
-    /**
-     * 数据流超时时间（毫秒）- 超过此时间未收到数据则触发重连
-     * @default 10000
-     */
-    dataTimeout?: number;
-    /**
-     * 数据流检测间隔（毫秒）
-     * @default 3000
-     */
-    dataCheckInterval?: number;
-}
-interface IBufferItem {
-    /** 片段数据  */
-    buf: Uint8Array;
-    /** 片段 url */
-    url: string;
-    /** 片段时长 */
-    duration: number;
-}
 
 interface IResult<T> {
     data?: T;
@@ -768,13 +730,8 @@ interface EZopenPlayerOptions extends PlayerOptions {
         ezopenParams?: Record<string, any>;
         wsParams?: string | Record<string, any>;
     };
-    /** 禁止渲染私有数据, 仅高性能版本支持（因为v1 本身不支持），仅支持初始化时配置 */
     disableRenderPrivateData?: boolean | true;
     decodeEngine?: number | 1;
-    /**  WebSocket 重连配置 */
-    reconnect?: ReconnectConfig;
-    isHls?: boolean;
-    isLive?: boolean;
 }
 declare class EZopenPlayer extends EventEmitter {
     _options: EZopenPlayerOptions;
@@ -826,10 +783,6 @@ declare class EZopenPlayer extends EventEmitter {
             seek: string;
             close: string;
             error: string;
-            reconnecting: string;
-            reconnectSuccess: string;
-            reconnectFailed: string;
-            dataTimeout: string;
         };
         CALLBACK: {
             pluginErrorHandler: string;
@@ -846,7 +799,7 @@ declare class EZopenPlayer extends EventEmitter {
         FECCorrect: {
             setFEC2DParam: string;
         };
-        streamInfoCB: string;
+        streamInfoCB: string; /** 全屏节点 */
     };
     logger: LoggerCls;
     i18n: I18n__default;
@@ -856,8 +809,6 @@ declare class EZopenPlayer extends EventEmitter {
      * v9.x 中会移除， 请使用 player.on, emit.emit, player.off, player.once, player.removeAllListeners
      */
     event: any;
-    isHls: boolean;
-    isLive: boolean;
     initializing: boolean;
     loading: boolean;
     /** 播放速度 */
@@ -905,14 +856,10 @@ declare class EZopenPlayer extends EventEmitter {
             playURL: string;
         };
     };
-    _reconnectState: any;
     __fCallback: Zoom3DCallback;
     __b3DZoom: boolean;
     pluginManager: PluginManager;
     _playerWindow: PlayerWindow;
-    /** 存储 hls 片段数据 */
-    _bufferList: IBufferItem[];
-    _hlsBufferShiftInterval: number | null;
     constructor(options: EZopenPlayerOptions);
     get width(): number;
     get height(): number;
@@ -925,7 +872,7 @@ declare class EZopenPlayer extends EventEmitter {
     play(options?: Partial<Pick<EZopenPlayerOptions, 'url' | 'accessToken'>>): Promise<unknown>;
     _wss_play(szUrl: string, oParams?: {
         playURL: string;
-    }): Promise<unknown>;
+    }, iWndNum?: number): Promise<unknown>;
     /**
      * 暂停播放 并断流???
      * @param {boolean} bool 是否断流
@@ -1120,7 +1067,7 @@ declare class EZopenPlayer extends EventEmitter {
     /**
      * @description 设置抗锯齿开关
      */
-    setAntialias(flag: 0 | 1): any;
+    setAntialias(flag: boolean): any;
     /**
      * @description 设置全局基准时间戳
      * @param {GlobalBaseTimeParams} params
@@ -1151,7 +1098,6 @@ declare class StreamClient {
     private _streamClient;
     _streamUUID: string;
     constructor(player: EZopenPlayer);
-    private _getStreamClientFactory;
     /**
      * @description 开流, 此时设备的流还没有发出来
      * @param {string} szUrl 取流路径，如ws://hostname:port/channel
@@ -1228,9 +1174,12 @@ declare class JSPlugin {
      *
      * @param {*} szUrl  "示例：wss://jsdecoder-aeye.hwwt2.com:443"
      * @param {*} oParams  "示例： {playURL: "/live?dev=F99467170&chn=9&stream=1&ssn=ot.9oovv27v00lck3ft0krfw61n8ugr4j5b-1ao1cqq1fm-1od8d0d-h1lnhi0w0&auth=1&biz=4&cln=100"}"
+     * @param {*} iWndNum
+     * @param {*} szStartTime
+     * @param {*} szStopTime
      * @returns
      */
-    JS_Play(szUrl?: any, oParams?: any): Promise<unknown>;
+    JS_Play(szUrl: any, oParams: any, iWndNum: any, szStartTime: any, szStopTime: any): Promise<unknown>;
     JS_SetSecretKey(iWndNum: any, secretKey: any): void;
     secretKey: any;
     JS_OpenSound(): number;
@@ -1328,10 +1277,10 @@ declare class JSPlugin {
     JS_SetGlobalBaseTime(params: any): code;
     /**
      * @description 设置抗锯齿
-     * @param {0 | 1} flag 抗锯齿开关
+     * @param {boolean} flag 抗锯齿开关
      * @returns {code} 0:成功，非0：错误码
      */
-    JS_SetAntialias(flag: 0 | 1): code;
+    JS_SetAntialias(flag: boolean): code;
 }
 
 export { JSPlugin as default };

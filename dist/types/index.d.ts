@@ -185,51 +185,88 @@ interface IFrameInfo {
     minute: number;
     second: number;
 }
-/**
- * WebSocket 重连配置
- */
-interface ReconnectConfig {
-    /**
-     * 是否启用自动重连
-     * @default true
-     */
-    enabled?: boolean;
-    /**
-     * 最大重试次数
-     * @default 3
-     */
-    maxRetry?: number;
-    /**
-     * 重试延迟时间（毫秒）
-     * @default 1500
-     */
-    retryDelay?: number;
-    /**
-     * 数据流超时时间（毫秒）- 超过此时间未收到数据则触发重连
-     * @default 10000
-     */
-    dataTimeout?: number;
-    /**
-     * 数据流检测间隔（毫秒）
-     * @default 3000
-     */
-    dataCheckInterval?: number;
-}
-interface IBufferItem {
-    /** 片段数据  */
-    buf: Uint8Array;
-    /** 片段 url */
-    url: string;
-    /** 片段时长 */
-    duration: number;
-}
 
+interface IStreamClient {
+    /**
+     * @description 开流, 此时设备的流还没有发出来
+     * @param {string} szUrl 取流路径，如ws://hostname:port/channel
+     * @param {object} oParams 取流需要涉及的相关参数
+     * @param {function} cbMessage 消息回调函数
+     * @param {function} cbClose 关闭回调
+     * @returns {Promise<string>} 返回Promise对象 // 取流uuid，用于区分每条取流连接
+     */
+    openStream: (szUrl: string, oParams: object, cbMessage: (msg: object) => void, cbClose: () => void) => Promise<string>;
+    /**
+     * @description 开始取流
+     *
+     * @param {string} id websocket id，在openStream的时候生成
+     * @param {string} szStartTime 开始时间
+     * @param {string} szStopTime 结束时间
+     * @param {function} cbMessage 码流回调函数
+     *
+     * @returns {Promise<unknown>} 返回Promise对象
+     */
+    startPlay: (id: string, szStartTime?: string, szStopTime?: string) => Promise<unknown>;
+    singleFrame: () => void;
+    /**
+     * @description 设置倍率
+     *
+     * @param {string} id websocket id在openStream的时候生成
+     * @param {number} iRate 播放倍率
+     *
+     * @returns {Promise<unknown>} Promise
+     */
+    setPlayRate: (id: string, iRate: number) => Promise<unknown>;
+    /**
+     * @description 定位回放
+     *
+     * @param {string} id websocket id在openStream的时候生成
+     * @param {string} szStartTime 开始时间
+     * @param {string} szStopTime 结束时间
+     *
+     * @returns {Promise<unknown>} Promise
+     */
+    seek: (id: string, szStartTime: string, szStopTime: string) => Promise<unknown>;
+    /**
+     * @description 暂停取流
+     *
+     * @param {string} id websocket id，在openStream的时候生成
+     *
+     * @returns {Promise<unknown>} 返回Promise对象
+     */
+    pause: (id: string) => Promise<unknown>;
+    /**
+     * @description 透传协议
+     *
+     * @param {string} id websocket id，在openStream的时候生成
+     * @param {string} szCmd, 透传的命令码
+     *
+     * @returns {Promise<unknown>} 返回Promise对象
+     */
+    transmission: (id: string, szCmd: string) => Promise<unknown>;
+    /**
+     * @description 恢复取流
+     *
+     * @param {string} id websocket id，在openStream的时候生成
+     *
+     * @returns {Promise<unknown>} 返回Promise对象
+     */
+    resume: (id: string) => Promise<unknown>;
+    /**
+     * @description 停止取流
+     *
+     * @param {string} id websocket id，在openStream的时候生成
+     *
+     * @returns {Promise<unknown>} 返回Promise对象
+     */
+    stop: (id: string) => Promise<unknown>;
+    stopAll: () => Promise<unknown>;
+}
 declare class StreamClient {
     private readonly _player;
     private _streamClient;
     _streamUUID: string;
     constructor(player: EZopenPlayer);
-    private _getStreamClientFactory;
     /**
      * @description 开流, 此时设备的流还没有发出来
      * @param {string} szUrl 取流路径，如ws://hostname:port/channel
@@ -821,13 +858,8 @@ interface EZopenPlayerOptions extends PlayerOptions {
         ezopenParams?: Record<string, any>;
         wsParams?: string | Record<string, any>;
     };
-    /** 禁止渲染私有数据, 仅高性能版本支持（因为v1 本身不支持），仅支持初始化时配置 */
     disableRenderPrivateData?: boolean | true;
     decodeEngine?: number | 1;
-    /**  WebSocket 重连配置 */
-    reconnect?: ReconnectConfig;
-    isHls?: boolean;
-    isLive?: boolean;
 }
 declare class EZopenPlayer extends EventEmitter {
     _options: EZopenPlayerOptions;
@@ -879,10 +911,6 @@ declare class EZopenPlayer extends EventEmitter {
             seek: string;
             close: string;
             error: string;
-            reconnecting: string;
-            reconnectSuccess: string;
-            reconnectFailed: string;
-            dataTimeout: string;
         };
         CALLBACK: {
             pluginErrorHandler: string;
@@ -899,7 +927,7 @@ declare class EZopenPlayer extends EventEmitter {
         FECCorrect: {
             setFEC2DParam: string;
         };
-        streamInfoCB: string;
+        streamInfoCB: string; /** 全屏节点 */
     };
     logger: LoggerCls;
     i18n: I18n;
@@ -909,8 +937,6 @@ declare class EZopenPlayer extends EventEmitter {
      * v9.x 中会移除， 请使用 player.on, emit.emit, player.off, player.once, player.removeAllListeners
      */
     event: any;
-    isHls: boolean;
-    isLive: boolean;
     initializing: boolean;
     loading: boolean;
     /** 播放速度 */
@@ -958,14 +984,10 @@ declare class EZopenPlayer extends EventEmitter {
             playURL: string;
         };
     };
-    _reconnectState: any;
     __fCallback: Zoom3DCallback;
     __b3DZoom: boolean;
     pluginManager: PluginManager;
     _playerWindow: PlayerWindow;
-    /** 存储 hls 片段数据 */
-    _bufferList: IBufferItem[];
-    _hlsBufferShiftInterval: number | null;
     constructor(options: EZopenPlayerOptions);
     get width(): number;
     get height(): number;
@@ -978,7 +1000,7 @@ declare class EZopenPlayer extends EventEmitter {
     play(options?: Partial<Pick<EZopenPlayerOptions, 'url' | 'accessToken'>>): Promise<unknown>;
     _wss_play(szUrl: string, oParams?: {
         playURL: string;
-    }): Promise<unknown>;
+    }, iWndNum?: number): Promise<unknown>;
     /**
      * 暂停播放 并断流???
      * @param {boolean} bool 是否断流
@@ -1173,7 +1195,7 @@ declare class EZopenPlayer extends EventEmitter {
     /**
      * @description 设置抗锯齿开关
      */
-    setAntialias(flag: 0 | 1): any;
+    setAntialias(flag: boolean): any;
     /**
      * @description 设置全局基准时间戳
      * @param {GlobalBaseTimeParams} params
@@ -1197,83 +1219,6 @@ declare class EZopenPlayer extends EventEmitter {
      */
     setStreamInfoCallBackType(type: 0 | 1, cb?: StreamInfoCallBackFn): void;
     _addEventListener(): void;
-}
-
-interface IStreamClient {
-    /**
-     * @description 开流, 此时设备的流还没有发出来
-     * @param {string} szUrl 取流路径，如ws://hostname:port/channel
-     * @param {object} oParams 取流需要涉及的相关参数
-     * @param {function} cbMessage 消息回调函数
-     * @param {function} cbClose 关闭回调
-     * @returns {Promise<string>} 返回Promise对象 // 取流uuid，用于区分每条取流连接
-     */
-    openStream: (szUrl: string, oParams: object, cbMessage: (msg: object) => void, cbClose: () => void) => Promise<string>;
-    /**
-     * @description 开始取流
-     *
-     * @param {string} id websocket id，在openStream的时候生成
-     * @param {string} szStartTime 开始时间
-     * @param {string} szStopTime 结束时间
-     * @param {function} cbMessage 码流回调函数
-     *
-     * @returns {Promise<unknown>} 返回Promise对象
-     */
-    startPlay: (id: string, szStartTime?: string, szStopTime?: string) => Promise<unknown>;
-    singleFrame: () => void;
-    /**
-     * @description 设置倍率
-     *
-     * @param {string} id websocket id在openStream的时候生成
-     * @param {number} iRate 播放倍率
-     *
-     * @returns {Promise<unknown>} Promise
-     */
-    setPlayRate: (id: string, iRate: number) => Promise<unknown>;
-    /**
-     * @description 定位回放
-     *
-     * @param {string} id websocket id在openStream的时候生成
-     * @param {string} szStartTime 开始时间
-     * @param {string} szStopTime 结束时间
-     *
-     * @returns {Promise<unknown>} Promise
-     */
-    seek: (id: string, szStartTime: string, szStopTime: string) => Promise<unknown>;
-    /**
-     * @description 暂停取流
-     *
-     * @param {string} id websocket id，在openStream的时候生成
-     *
-     * @returns {Promise<unknown>} 返回Promise对象
-     */
-    pause: (id: string) => Promise<unknown>;
-    /**
-     * @description 透传协议
-     *
-     * @param {string} id websocket id，在openStream的时候生成
-     * @param {string} szCmd, 透传的命令码
-     *
-     * @returns {Promise<unknown>} 返回Promise对象
-     */
-    transmission: (id: string, szCmd: string) => Promise<unknown>;
-    /**
-     * @description 恢复取流
-     *
-     * @param {string} id websocket id，在openStream的时候生成
-     *
-     * @returns {Promise<unknown>} 返回Promise对象
-     */
-    resume: (id: string) => Promise<unknown>;
-    /**
-     * @description 停止取流
-     *
-     * @param {string} id websocket id，在openStream的时候生成
-     *
-     * @returns {Promise<unknown>} 返回Promise对象
-     */
-    stop: (id: string) => Promise<unknown>;
-    stopAll: () => Promise<unknown>;
 }
 
 export { type EZopenPlayerOptions, FECCorrect, type GlobalBaseTimeParams, type IFrameInfo, type IResult, type IStreamClient, type MirrorFlipCommand, type PlayerEnv, PluginManager, StreamClient, type WasmDecoderStatue, type WaterMarkParams, EZopenPlayer as default };
