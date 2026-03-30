@@ -6,6 +6,7 @@ import I18n__default from '@ezuikit/utils-i18n';
 import Service, { DeviceCapacityRes, DeviceInfoRes } from '@ezuikit/utils-service';
 import { EzopenURL } from '@ezuikit/utils-tools';
 import EventEmitter from 'eventemitter3';
+import { PlayerPluginRecord } from '@ezuikit/player-plugin-record';
 
 /**
  * 环境
@@ -1195,7 +1196,7 @@ declare class JSPlugin {
     player: EZopenPlayer;
     i18n: I18n.default;
     downloadRecord: any;
-    _recordPlugin: any;
+    _recordPlugin: PlayerPluginRecord;
     nWidth: number;
     nHeight: number;
     oStreamClient: StreamClient;
@@ -1240,8 +1241,8 @@ declare class JSPlugin {
      * @returns {none} 无
      */
     JS_Disable3DZoom(): none;
-    JS_StartSave(fileName: string | undefined, stopCallback: any, secretKey: any): any;
-    JS_StopSave(download?: boolean): any;
+    JS_StartSave(fileName: string | undefined, stopCallback: any, secretKey: any): Promise<void>;
+    JS_StopSave(download?: boolean): Promise<unknown>;
     _JSPlayM4_GetFrameInfo(): IFrameInfo;
     _JSPlayM4_SetDisplayRegion(left: any, right: any, top: any, bottom: any, flag: boolean | undefined, isFullScreen: any): boolean;
     JS_CapturePicture(port: any, fileName: any, format: any, callback: any, download: any, canvas: any): Promise<any>;
