@@ -1092,7 +1092,7 @@ declare class EZopenPlayer extends EventEmitter {
      * @param secretKey 密钥
      * @returns {number} 1 成功  0 失败
      */
-    setSecretKey(secretKey: string): void;
+    setSecretKey(secretKey: string): any;
     /**
      *
      * @returns
@@ -1236,6 +1236,12 @@ declare class JSPlugin {
      */
     JS_Play(szUrl?: any, oParams?: any): Promise<unknown>;
     JS_SetSecretKey(iWndNum: any, secretKey: any): void;
+    /**
+     * @description 设置解密密钥
+     * @param {string} secretKey 解密密钥
+     * @returns {code} 0:成功，非0：错误码
+     */
+    JS_SetSecretKey(secretKey: string): code;
     secretKey: any;
     JS_OpenSound(): number;
     JS_CloseSound(): number;

@@ -1146,7 +1146,7 @@ declare class EZopenPlayer extends EventEmitter {
      * @param secretKey 密钥
      * @returns {number} 1 成功  0 失败
      */
-    setSecretKey(secretKey: string): void;
+    setSecretKey(secretKey: string): any;
     /**
      *
      * @returns
