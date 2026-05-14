@@ -5,6 +5,7 @@ import * as I18n from '@ezuikit/utils-i18n';
 import I18n__default from '@ezuikit/utils-i18n';
 import Service, { DeviceCapacityRes, DeviceInfoRes } from '@ezuikit/utils-service';
 import { EzopenURL } from '@ezuikit/utils-tools';
+import { PlayerPluginRecord } from '@ezuikit/player-plugin-record';
 import EventEmitter from 'eventemitter3';
 
 /**
@@ -52,7 +53,7 @@ interface PlayerOptions {
      */
     streamInfoCBType: 0 | 1;
 }
-interface IResult$1<T> {
+interface IResult<T> {
     data?: T;
     code?: number;
     msg?: string;
@@ -106,127 +107,6 @@ interface IBufferItem {
     url: string;
     /** 片段时长 */
     duration: number;
-}
-
-interface IResult<T> {
-    data?: T;
-    code?: number;
-    msg?: string;
-}
-/**
- * 播放器标准接口
- */
-interface PlayerInterface extends EventEmitter {
-    playing: boolean;
-    volume: number;
-    playbackRate: number;
-    deviceCapacity: Record<string, any>;
-    i18n: any;
-    logger: any;
-    event: EventEmitter;
-    wasmplayer: any;
-    _wss_info: any;
-    _options: any;
-    /**
-     * 播放
-     * @param options
-     * @returns {Promise}
-     */
-    play: (options?: any) => Promise<unknown>;
-    /**
-     * 暂停播放
-     * @returns
-     */
-    pause: (bool?: boolean) => Promise<unknown>;
-    /**
-     * 销毁并断流
-     * @returns
-     */
-    destroy: () => Promise<unknown>;
-    /**
-     * 截图
-     * @param {string} name 文件名 默认时间戳（new Date().getTime()）
-     * @param {"png" | "jpeg"} fmt 图片格式
-     * @param {"base64"} type 文件格式 默认base64
-     * @param {boolean} download 是否直接下载 默认不直接下载
-     * @returns 返回base64字符
-     */
-    snapshot: (name?: string, fmt?: 'jpeg', type?: 'base64', download?: boolean) => Promise<IResult<{
-        fileName?: string;
-        base64?: string;
-    } | null>>;
-    /**
-     * 开始录制视频
-     * @param {string} name 文件名 默认时间戳（new Date().getTime()）
-     * @param {"mp4"} fmt 图片格式 默认mp4
-     * @returns
-     */
-    startRecord?: (name?: string, fmt?: 'mp4') => Promise<any>;
-    /**
-     * 停止录制
-     * @returns
-     */
-    stopRecord?: () => Promise<any>;
-    /**
-     * 全屏
-     * @returns
-     */
-    fullScreen: () => Promise<void>;
-    /**
-     * 退出全屏
-     * @returns
-     */
-    exitScreen: () => Promise<void>;
-    /**
-     * 设置画布/视频的尺寸  不设置 默认使用容器的高宽（充满容器）
-     * @param {number=} width 画布的宽度
-     * @param {number=} height 画布的高度
-     * @returns
-     */
-    resize: (width?: number, height?: number) => Promise<{
-        width: number;
-        height: number;
-    }>;
-    /**
-     * 设置音量
-     * @param volume 音量 [0-1]， 0：表示静音
-     * @returns {void}
-     */
-    setVolume: (volume: number) => void;
-    /**
-     * 设置封面
-     * @param url
-     * @returns
-     */
-    setPoster?: (postUrl: string) => void;
-    /**
-     * 设置播放速度
-     * @param rate
-     * @returns
-     */
-    setPlaybackRate?: (rate: number) => void;
-    /**
-     * 当前版本号
-     * @returns
-     */
-    getVersion: () => object;
-    /**
-     * 设置日志打印的级别 INFO | LOG | WARN | ERROR
-     *
-     *
-     * @param {string} level 日志级别 一次从大到小 3 -> 0 (为了更好的扩展)
-     * @returns
-     */
-    setDebug?: (level: 'INFO' | 'LOG' | 'WARN' | 'ERROR') => void;
-}
-
-interface PlayerPlugin {
-    name: string;
-    init?: (player?: PlayerInterface) => void;
-    beforeExec?: (player?: PlayerInterface) => boolean | Promise<boolean>;
-    exec: (player?: PlayerInterface) => void;
-    afterExec?: (player?: PlayerInterface) => void;
-    destroy?: (player?: PlayerInterface) => void;
 }
 
 declare class ESCanvas {
@@ -582,32 +462,32 @@ interface WasmDecoderStatue {
     bSupHardOrSoft: boolean;
     bSupHardDecAVC: boolean;
     bSupHardDecHEVC: boolean;
-    cmd: 'loaded' | 'onebyone';
+    cmd: "loaded" | "onebyone";
     errorCode: number;
     status: any;
 }
 
 type Zoom3DCallback = (oRECT?: any) => void;
 
-type SnapshotFmt = 'jpeg';
+type SnapshotFmt = "jpeg";
 
 /**
  * @description 插件管理系统
  */
 declare class PluginManager {
     context: EZopenPlayer;
-    plugins: Map<string, PlayerPlugin>;
+    plugins: Map<string, PlayerPluginRecord>;
     constructor(player: EZopenPlayer);
     /**
      * @description 注册插件做个插件
      * @param plugins
      */
-    usePlugins(plugins: PlayerPlugin[]): Promise<void>;
+    usePlugins(plugins: PlayerPluginRecord[]): Promise<void>;
     /**
      * @description 注册插件
      * @param plugins
      */
-    use(plugin: PlayerPlugin): Promise<void>;
+    use(plugin: PlayerPluginRecord): Promise<void>;
     /**
      * @description 通过name销毁指定插件
      * @param {string} name 插件名
@@ -764,7 +644,7 @@ interface EZopenPlayerOptions extends PlayerOptions {
     /** 全屏节点 */
     fullScreenEle?: HTMLElement;
     /** 指定解码类型， v1 软解  v3 包括硬解和多线程 */
-    decoderType?: 'auto' | 'v1' | 'v3';
+    decoderType?: "auto" | "v1" | "v3";
     /** 下载当前原始视频流，用于调试，不能动态设置，结束或销毁播放时自动保存成文件并下载 */
     debugDownloadData?: boolean;
     extraParams?: {
@@ -781,7 +661,7 @@ interface EZopenPlayerOptions extends PlayerOptions {
     isLive?: boolean;
 }
 declare class EZopenPlayer extends EventEmitter {
-    _options: EZopenPlayerOptions;
+    _options: EZopenPlayerOptions | undefined;
     static EVENT_TYPE: {
         initializing: string;
         loadstart: string;
@@ -861,7 +741,6 @@ declare class EZopenPlayer extends EventEmitter {
      */
     event: any;
     isHls: boolean;
-    isLive: boolean;
     initializing: boolean;
     loading: boolean;
     /** 播放速度 */
@@ -884,6 +763,10 @@ declare class EZopenPlayer extends EventEmitter {
     $container: HTMLElement;
     esCanvas: ESCanvas;
     fECCorrect: FECCorrect;
+    /**  当前播放时间，单位秒 */
+    currentTime: number;
+    /** 视频总时长，单位秒 */
+    duration: number;
     _oStreamClient: StreamClient;
     _aHead: Uint8Array;
     /** @private */
@@ -926,7 +809,7 @@ declare class EZopenPlayer extends EventEmitter {
      * @param options
      * @returns
      */
-    play(options?: Partial<Pick<EZopenPlayerOptions, 'url' | 'accessToken'>>): Promise<unknown>;
+    play(options?: Partial<Pick<EZopenPlayerOptions, "url" | "accessToken">>): Promise<unknown>;
     _wss_play(szUrl: string, oParams?: {
         playURL: string;
     }): Promise<unknown>;
@@ -961,7 +844,7 @@ declare class EZopenPlayer extends EventEmitter {
      * @param {boolean} canvas 是否使用 canvas
      * @returns 返回base64字符
      */
-    snapshot(name?: string, fmt?: SnapshotFmt, type?: 'base64', download?: boolean, canvas?: boolean): Promise<IResult$1<{
+    snapshot(name?: string, fmt?: SnapshotFmt, type?: "base64", download?: boolean, canvas?: boolean): Promise<IResult<{
         fileName?: string | undefined;
         base64?: string | undefined;
     } | null>>;
@@ -972,7 +855,7 @@ declare class EZopenPlayer extends EventEmitter {
      * @param {boolean} download 是否直接下载 默认不直接下载 false
      * @returns 返回base64字符
      */
-    snapshotByCanvas(name?: string, fmt?: SnapshotFmt, download?: boolean): Promise<IResult$1<{
+    snapshotByCanvas(name?: string, fmt?: SnapshotFmt, download?: boolean): Promise<IResult<{
         fileName?: string | undefined;
         base64?: string | undefined;
     } | null>>;
@@ -1008,7 +891,7 @@ declare class EZopenPlayer extends EventEmitter {
      * @description 插件管理
      * @param plugin 插件
      */
-    use(plugin: PlayerPlugin): void;
+    use(plugin: typeof PlayerPluginRecord): void;
     /**
      *
      * @param {Object} type 矫正类型  参考 src/ezopen/constants.js
@@ -1067,7 +950,7 @@ declare class EZopenPlayer extends EventEmitter {
      */
     disable3DZoom(): number;
     /**
-     * @description 获取当前osd, 当获取失败返回 0
+     * @description 获取当前osd (时间戳), 当获取失败返回 0
      * @returns {number}
      */
     getOSDTime(): number;
@@ -1078,6 +961,7 @@ declare class EZopenPlayer extends EventEmitter {
     getFrameInfo(): IFrameInfo;
     /**
      * @description 设置播放视频区域 （仅视频不是画布）
+     * @deprecated
      * @param {number} left 视频展示区域 x轴开始位置
      * @param {number} right 视频展示区域 x轴结束位置
      * @param {number} top 视频展示区域 y轴开始位置
@@ -1097,7 +981,7 @@ declare class EZopenPlayer extends EventEmitter {
      *
      * @returns
      */
-    getOptions(): EZopenPlayerOptions;
+    getOptions(): EZopenPlayerOptions | undefined;
     /**
      * @description 切换调试日志等级
      * @param {LoggerOptions} loggerOptions 日志等级
@@ -1148,6 +1032,15 @@ declare class EZopenPlayer extends EventEmitter {
      */
     setStreamInfoCallBackType(type: 0 | 1, cb?: StreamInfoCallBackFn): void;
     _addEventListener(): void;
+    /**
+     * 是否是 hls 直播， 优先使用用户传的值， 如果你没有传值（boolean），则根据 m3u8 的解析结果进行判断
+     * @returns {boolean}
+     */
+    get isLive(): boolean;
+    /**
+     * 片段列表
+     */
+    get segments(): any;
 }
 
 declare class StreamClient {
@@ -1203,6 +1096,7 @@ declare class StreamClient {
      * @description 客户端销毁
      */
     destroy(): void;
+    advance(): any;
 }
 
 declare class JSPlugin {
@@ -1219,11 +1113,11 @@ declare class JSPlugin {
     g_port: number;
     get bPlay(): boolean;
     get iRate(): number;
-    set playURL(arg: string);
+    set playURL(url: string);
     get playURL(): string;
-    set FECSplitIds(arg: string | undefined);
+    set FECSplitIds(ids: string | undefined);
     get FECSplitIds(): string | undefined;
-    set correctType(arg: any);
+    set correctType(type: any);
     get correctType(): any;
     _initEventCallback(): void;
     JSPlayM4_SetDecodeEngine(useHard: any): void;
