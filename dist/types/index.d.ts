@@ -5,6 +5,7 @@ import I18n from '@ezuikit/utils-i18n';
 import Service, { DeviceCapacityRes, DeviceInfoRes } from '@ezuikit/utils-service';
 import { EzopenURL } from '@ezuikit/utils-tools';
 import { PlayerPluginRecord } from '@ezuikit/player-plugin-record';
+import StreamIO from '@ezuikit/stream-io';
 import EventEmitter from 'eventemitter3';
 
 /**
@@ -106,62 +107,6 @@ interface IBufferItem {
     url: string;
     /** 片段时长 */
     duration: number;
-}
-
-declare class StreamClient {
-    private readonly _player;
-    private _streamClient;
-    _streamUUID: string;
-    constructor(player: EZopenPlayer);
-    private _getStreamClientFactory;
-    /**
-     * @description 开流, 此时设备的流还没有发出来
-     * @param {string} szUrl 取流路径，如ws://hostname:port/channel
-     * @param {object} oParams 取流需要涉及的相关参数
-     * @param {function} cbMessage 消息回调函数
-     * @param {function} cbClose 关闭回调
-     * @param {function} cbError 错误回调
-     * @returns {Promise<string>} 返回Promise对象 // 取流uuid，用于区分每条取流连接
-     */
-    openStream(szUrl: string, oParams: object, cbMessage: (msg: object) => void, cbClose: (id?: string) => void, cbError: (id?: string, msg?: any) => void): Promise<string>;
-    /**
-     * @description 开始取流
-     *
-     * @param {string} id websocket id，在openStream的时候生成
-     * @param {string} szStartTime 开始时间
-     * @param {string} szStopTime 结束时间
-     * @param {function} cbMessage 码流回调函数
-     *
-     * @returns {Promise<unknown>} 返回Promise对象
-     */
-    startPlay(id?: string): Promise<void>;
-    /**
-     * @description 设置播放速度
-     * @param rate 播放速度
-     * @param uuid websocket id，在openStream的时候生成
-     * @returns
-     */
-    setPlayRate(rate: number, id?: string): Promise<void>;
-    /**
-     * @description 定位回放
-     *
-     * @param {string} id websocket id在openStream的时候生成
-     * @param {string} startTime 开始时间
-     * @param {string} stopTime 结束时间
-     *
-     * @returns {Promise<unknown>} Promise
-     */
-    seek(startTime: string, stopTime: string, id?: string): Promise<void>;
-    /**
-     * @description 停止所有流
-     * @returns
-     */
-    stopAll(): Promise<void>;
-    /**
-     * @description 客户端销毁
-     */
-    destroy(): void;
-    advance(): any;
 }
 
 declare class ESCanvas {
@@ -822,7 +767,7 @@ declare class EZopenPlayer extends EventEmitter {
     currentTime: number;
     /** 视频总时长，单位秒 */
     duration: number;
-    _oStreamClient: StreamClient;
+    _oStreamClient: StreamIO;
     _aHead: Uint8Array;
     /** @private */
     _detectTimer: any;
@@ -1096,6 +1041,62 @@ declare class EZopenPlayer extends EventEmitter {
      * 片段列表
      */
     get segments(): any;
+}
+
+declare class StreamClient {
+    private readonly _player;
+    private _streamClient;
+    _streamUUID: string;
+    constructor(player: EZopenPlayer);
+    private _getStreamClientFactory;
+    /**
+     * @description 开流, 此时设备的流还没有发出来
+     * @param {string} szUrl 取流路径，如ws://hostname:port/channel
+     * @param {object} oParams 取流需要涉及的相关参数
+     * @param {function} cbMessage 消息回调函数
+     * @param {function} cbClose 关闭回调
+     * @param {function} cbError 错误回调
+     * @returns {Promise<string>} 返回Promise对象 // 取流uuid，用于区分每条取流连接
+     */
+    openStream(szUrl: string, oParams: object, cbMessage: (msg: object) => void, cbClose: (id?: string) => void, cbError: (id?: string, msg?: any) => void): any;
+    /**
+     * @description 开始取流
+     *
+     * @param {string} id websocket id，在openStream的时候生成
+     * @param {string} szStartTime 开始时间
+     * @param {string} szStopTime 结束时间
+     * @param {function} cbMessage 码流回调函数
+     *
+     * @returns {Promise<unknown>} 返回Promise对象
+     */
+    startPlay(id?: string): any;
+    /**
+     * @description 设置播放速度
+     * @param rate 播放速度
+     * @param uuid websocket id，在openStream的时候生成
+     * @returns
+     */
+    setPlayRate(rate: number, id?: string): any;
+    /**
+     * @description 定位回放
+     *
+     * @param {string} id websocket id在openStream的时候生成
+     * @param {string} startTime 开始时间
+     * @param {string} stopTime 结束时间
+     *
+     * @returns {Promise<unknown>} Promise
+     */
+    seek(startTime: string, stopTime: string, id?: string): any;
+    /**
+     * @description 停止所有流
+     * @returns
+     */
+    stopAll(): any;
+    /**
+     * @description 客户端销毁
+     */
+    destroy(): void;
+    advance(): any;
 }
 
 interface IStreamClient {
