@@ -427,7 +427,7 @@ declare class PlayerWindow {
     private _canvasHeight;
     dpr: number;
     canvasId: string;
-    $canvas: HTMLCanvasElement;
+    $canvas: HTMLCanvasElement | null;
     _options: IPlayerWindowOptions;
     private readonly _$container;
     private readonly _player;
@@ -1052,7 +1052,7 @@ declare class JSPlugin {
     player: EZopenPlayer;
     i18n: I18n.default;
     downloadRecord: any;
-    _recordPlugin: PlayerPluginRecord;
+    _recordPlugin: any;
     nWidth: number;
     nHeight: number;
     oStreamClient: StreamIO.default;
@@ -1102,8 +1102,8 @@ declare class JSPlugin {
      * @returns {none} 无
      */
     JS_Disable3DZoom(): none;
-    JS_StartSave(fileName: string | undefined, stopCallback: any, secretKey: any): Promise<void>;
-    JS_StopSave(download?: boolean): Promise<unknown>;
+    JS_StartSave(fileName: string | undefined, stopCallback: any, secretKey: any): any;
+    JS_StopSave(download?: boolean): any;
     _JSPlayM4_GetFrameInfo(): IFrameInfo;
     _JSPlayM4_SetDisplayRegion(left: any, right: any, top: any, bottom: any, flag: boolean | undefined, isFullScreen: any): boolean;
     JS_CapturePicture(port: any, fileName: any, format: any, callback: any, download: any, canvas: any): Promise<any>;
