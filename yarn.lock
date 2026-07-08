@@ -2,22 +2,24 @@
 # yarn lockfile v1
 
 
-"@ezuikit/player-plugin-record@9.0.3-beta.1":
-  version "9.0.3-beta.1"
-  resolved "https://registry.yarnpkg.com/@ezuikit/player-plugin-record/-/player-plugin-record-9.0.3-beta.1.tgz#9255dcf69b1ce66559f18065881ce3036edb48ff"
-  integrity sha512-qsQSAuqg9XwugNfvuc6F6YKWoFhO8IQVyxmtpWrrwF8anWp2Egz7t0ZObv4Bh9sHabFu9ct8A5eLtwF/XCkk3w==
+"@ezuikit/player-plugin-record@9.1.0-beta.6":
+  version "9.1.0-beta.6"
+  resolved "https://registry.yarnpkg.com/@ezuikit/player-plugin-record/-/player-plugin-record-9.1.0-beta.6.tgz#180524a2d82e0e5547ad39c3562255cfbc55becc"
+  integrity sha512-qWFjjvlCq4KF0d3IAy0K8mXX9NSIbm5fFnKrRecSmZOVJDPOPXjwEEGbFyyjlHPgLXzxmxQsSRhJwxwC9xGRJg==
+  dependencies:
+    "@ezuikit/utils-tools" "2.0.5"
 
-"@ezuikit/utils-i18n@2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@ezuikit/utils-i18n/-/utils-i18n-2.0.0.tgz#41dceba7b09043e1a5baffce36ca0e0de36c7cc4"
-  integrity sha512-gMkfdwFTRk3bAkUVWRGPyEsQl4aIImBpQp732aSSHA75LFPi1MmdaB2Xf34OeC+4v+Anpbt75vviCpUrKPMKlQ==
+"@ezuikit/utils-i18n@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@ezuikit/utils-i18n/-/utils-i18n-2.0.1.tgz#e4a5d0b921763ab5554cedc02fb8e058f4640802"
+  integrity sha512-846z2bDpCxioTBO3KG8Uw8QUFa6hzquSzmZKWPO6fjT3P4v6zNnXRz+Z3JCPlXnc4eesi03A+JmMAU6m5KI4gg==
   dependencies:
     deepmerge "^4.3.1"
 
-"@ezuikit/utils-logger@2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@ezuikit/utils-logger/-/utils-logger-2.0.0.tgz#f3ffeb0a5d485e6a83710b2a924695f2a66786c3"
-  integrity sha512-xtq7Vwle75pfA1UfmcsO2cAdqu9n04fxXDu32fpta7A99ENgyk8saK1NRxeiLnqQHdibaIAmrIbfehgLAH6ecQ==
+"@ezuikit/utils-logger@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@ezuikit/utils-logger/-/utils-logger-2.0.1.tgz#5493ec1e388a55b14e557581cb382edcae71cfdc"
+  integrity sha512-AeLLR9ZQJkSJFfCicpkVBcnOE4zyQMp4W4997sTEGyF3k3I8Upkfn4Cye2A44MIphdw6eytKlaJp6H4joSafQw==
 
 "@ezuikit/utils-service@1.0.1":
   version "1.0.1"
@@ -27,10 +29,10 @@
     "@ezuikit/utils-tools" "^1.0.1"
     dayjs "^1.11.10"
 
-"@ezuikit/utils-tools@2.0.3":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@ezuikit/utils-tools/-/utils-tools-2.0.3.tgz#11fdf9422288f1355c2378b9d890844168fca6b3"
-  integrity sha512-YvUGDU1ikjSc5YjQLh6kQWGBOpqkOczb3HiocWm7FOk9grW6IAGd3RbRu0e+XyWT20nefcEpbIhRwOYsTejjnA==
+"@ezuikit/utils-tools@2.0.5":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@ezuikit/utils-tools/-/utils-tools-2.0.5.tgz#81edb936af448d52e61aa7425d7faa4ec1100bd0"
+  integrity sha512-7SR3kKQdColQ+Rz/PPaLzHi8Yv3RuhFUh3iMymonlO95OJSZBgjaTSX5QNeTnZIi57soNVoHByR4tS/JbMA4Wg==
 
 "@ezuikit/utils-tools@^1.0.1":
   version "1.1.0"

@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@ezuikit/player-plugin-record':
-    specifier: 9.1.0-beta.5
-    version: 9.1.0-beta.5
+    specifier: 9.1.0-beta.6
+    version: 9.1.0-beta.6
   '@ezuikit/utils-i18n':
     specifier: 2.0.1
     version: 2.0.1
@@ -38,8 +38,10 @@ dependencies:
 
 packages:
 
-  /@ezuikit/player-plugin-record@9.1.0-beta.5:
-    resolution: {integrity: sha512-H8PN3LfxkkYSHzGI6jJtPDgw7QWxicGxh/jN8p9758zuHYj++h+yJVSy6I34moDaawtlWWHF8jC5qZDSkSci/g==}
+  /@ezuikit/player-plugin-record@9.1.0-beta.6:
+    resolution: {integrity: sha512-qWFjjvlCq4KF0d3IAy0K8mXX9NSIbm5fFnKrRecSmZOVJDPOPXjwEEGbFyyjlHPgLXzxmxQsSRhJwxwC9xGRJg==}
+    dependencies:
+      '@ezuikit/utils-tools': 2.0.5
     dev: false
 
   /@ezuikit/utils-i18n@2.0.1:
