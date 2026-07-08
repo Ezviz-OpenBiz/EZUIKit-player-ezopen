@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@ezuikit/player-plugin-record@9.1.0-beta.6":
-  version "9.1.0-beta.6"
-  resolved "https://registry.yarnpkg.com/@ezuikit/player-plugin-record/-/player-plugin-record-9.1.0-beta.6.tgz#180524a2d82e0e5547ad39c3562255cfbc55becc"
-  integrity sha512-qWFjjvlCq4KF0d3IAy0K8mXX9NSIbm5fFnKrRecSmZOVJDPOPXjwEEGbFyyjlHPgLXzxmxQsSRhJwxwC9xGRJg==
+"@ezuikit/player-plugin-record@9.1.0-beta.8":
+  version "9.1.0-beta.8"
+  resolved "https://registry.yarnpkg.com/@ezuikit/player-plugin-record/-/player-plugin-record-9.1.0-beta.8.tgz#31b2c01f14d0d040eba35bb2d3787c3642f5437c"
+  integrity sha512-FUl8cx2W/xGUBSxdcUNlgYSEk+gfv6wHFoZ2QWI+h2pbzL5LZMch6fe153ijhr2h5J0qtyxCSz/dF92ozv1cdA==
   dependencies:
     "@ezuikit/utils-tools" "2.0.5"
 
