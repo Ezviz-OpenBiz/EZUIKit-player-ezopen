@@ -1,0 +1,90 @@
+lockfileVersion: '6.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+dependencies:
+  '@ezuikit/player-plugin-record':
+    specifier: 9.1.0-beta.5
+    version: 9.1.0-beta.5
+  '@ezuikit/utils-i18n':
+    specifier: 2.0.1
+    version: 2.0.1
+  '@ezuikit/utils-logger':
+    specifier: 2.0.1
+    version: 2.0.1
+  '@ezuikit/utils-service':
+    specifier: 1.0.1
+    version: 1.0.1
+  '@ezuikit/utils-tools':
+    specifier: 2.0.5
+    version: 2.0.5
+  dayjs:
+    specifier: ^1.11.10
+    version: 1.11.21
+  deepmerge:
+    specifier: ^4.3.1
+    version: 4.3.1
+  eventemitter3:
+    specifier: ^5.0.1
+    version: 5.0.4
+  screenfull:
+    specifier: ^5.2.0
+    version: 5.2.0
+  ua-parser-js:
+    specifier: 1.0.37
+    version: 1.0.37
+
+packages:
+
+  /@ezuikit/player-plugin-record@9.1.0-beta.5:
+    resolution: {integrity: sha512-H8PN3LfxkkYSHzGI6jJtPDgw7QWxicGxh/jN8p9758zuHYj++h+yJVSy6I34moDaawtlWWHF8jC5qZDSkSci/g==}
+    dev: false
+
+  /@ezuikit/utils-i18n@2.0.1:
+    resolution: {integrity: sha512-846z2bDpCxioTBO3KG8Uw8QUFa6hzquSzmZKWPO6fjT3P4v6zNnXRz+Z3JCPlXnc4eesi03A+JmMAU6m5KI4gg==}
+    dependencies:
+      deepmerge: 4.3.1
+    dev: false
+
+  /@ezuikit/utils-logger@2.0.1:
+    resolution: {integrity: sha512-AeLLR9ZQJkSJFfCicpkVBcnOE4zyQMp4W4997sTEGyF3k3I8Upkfn4Cye2A44MIphdw6eytKlaJp6H4joSafQw==}
+    dev: false
+
+  /@ezuikit/utils-service@1.0.1:
+    resolution: {integrity: sha512-iNjYuU7AScBJxvKBM9PjiGI2y64QJNPT/H1Fy/Y7ZIAlw4DO//TP+x50qCho+i+EOUpWLtOqBQvtRb7a0O4X4Q==}
+    dependencies:
+      '@ezuikit/utils-tools': 1.1.0
+      dayjs: 1.11.21
+    dev: false
+
+  /@ezuikit/utils-tools@1.1.0:
+    resolution: {integrity: sha512-mujPtXIhZnuJrJySu1/Z6X90sMJQStZydurZcfetMCH6pqIYN4P+1w6+P8PCTR6k4LJp5nY9+eNnKa7AZ8OBKA==}
+    dev: false
+
+  /@ezuikit/utils-tools@2.0.5:
+    resolution: {integrity: sha512-7SR3kKQdColQ+Rz/PPaLzHi8Yv3RuhFUh3iMymonlO95OJSZBgjaTSX5QNeTnZIi57soNVoHByR4tS/JbMA4Wg==}
+    dev: false
+
+  /dayjs@1.11.21:
+    resolution: {integrity: sha512-98IT+HOahAisibz/yjKbzuOBwYcjJ7BCLPzARyHiyEBmRz4fatF+KPJszEHXsGYjUG234aH/cOjW1wwTbKUZlA==}
+    dev: false
+
+  /deepmerge@4.3.1:
+    resolution: {integrity: sha512-3sUqbMEc77XqpdNO7FRyRog+eW3ph+GYCbj+rK+uYyRMuwsVy0rMiVtPn+QJlKFvWP/1PYpapqYn0Me2knFn+A==}
+    engines: {node: '>=0.10.0'}
+    dev: false
+
+  /eventemitter3@5.0.4:
+    resolution: {integrity: sha512-mlsTRyGaPBjPedk6Bvw+aqbsXDtoAyAzm5MO7JgU+yVRyMQ5O8bD4Kcci7BS85f93veegeCPkL8R4GLClnjLFw==}
+    dev: false
+
+  /screenfull@5.2.0:
+    resolution: {integrity: sha512-9BakfsO2aUQN2K9Fdbj87RJIEZ82Q9IGim7FqM5OsebfoFC6ZHXgDq/KvniuLTPdeM8wY2o6Dj3WQ7KeQCj3cA==}
+    engines: {node: '>=0.10.0'}
+    dev: false
+
+  /ua-parser-js@1.0.37:
+    resolution: {integrity: sha512-bhTyI94tZofjo+Dn8SN6Zv8nBDvyXTymAdM3LDI/0IboIUwTu1rEhW7v2TfiVsoYWgkQ4kOVqnI8APUFbIQIFQ==}
+    dev: false
