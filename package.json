@@ -39,6 +39,7 @@
     "type": "git",
     "url": "git+https://github.com/Ezviz-OpenBiz/EZUIKit-player-ezopen.git"
   },
+  "homepage": "https://github.com/Ezviz-OpenBiz/EZUIKit-player-ezopen#readme",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
