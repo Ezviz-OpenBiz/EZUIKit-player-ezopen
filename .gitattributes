@@ -1,0 +1,7 @@
+# 排除以下目录/文件，不出现在 GitHub Release 的源码压缩包中
+.gitattributes   export-ignore
+.gitignore        export-ignore
+.github/          export-ignore
+node_modules/     export-ignore
+examples/        export-ignore
+demos/           export-ignore
