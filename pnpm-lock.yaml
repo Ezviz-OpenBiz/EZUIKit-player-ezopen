@@ -6,20 +6,20 @@ settings:
 
 dependencies:
   '@ezuikit/player-plugin-record':
-    specifier: 9.1.0
-    version: 9.1.0
+    specifier: 9.1.1-beta.1
+    version: 9.1.1-beta.1
   '@ezuikit/utils-i18n':
-    specifier: 2.0.1
+    specifier: ^2.0.1
     version: 2.0.1
   '@ezuikit/utils-logger':
-    specifier: 2.0.1
+    specifier: ^2.0.1
     version: 2.0.1
   '@ezuikit/utils-service':
-    specifier: 1.0.1
-    version: 1.0.1
+    specifier: 2.0.0
+    version: 2.0.0
   '@ezuikit/utils-tools':
-    specifier: 2.0.5
-    version: 2.0.5
+    specifier: ^2.0.6
+    version: 2.0.6
   dayjs:
     specifier: ^1.11.10
     version: 1.11.21
@@ -38,10 +38,10 @@ dependencies:
 
 packages:
 
-  /@ezuikit/player-plugin-record@9.1.0:
-    resolution: {integrity: sha512-wG2o4fCLPdLUFt8Z78PPYfuv2yKUqx68txDc81XmonCG6wWx9r1wVQ9iDa5d+XbuQKC5DJs6z7HxO4S5OuJ+rg==}
+  /@ezuikit/player-plugin-record@9.1.1-beta.1:
+    resolution: {integrity: sha512-T76aR7Gdaoo0+b4/mJ3grrWjVglE6po5O1ZY6CcGjJkX73XRoUl9szCB3iy/7ENQwruSgI+U2co29ghpCY5SWw==}
     dependencies:
-      '@ezuikit/utils-tools': 2.0.5
+      '@ezuikit/utils-tools': 2.0.6
     dev: false
 
   /@ezuikit/utils-i18n@2.0.1:
@@ -54,19 +54,14 @@ packages:
     resolution: {integrity: sha512-AeLLR9ZQJkSJFfCicpkVBcnOE4zyQMp4W4997sTEGyF3k3I8Upkfn4Cye2A44MIphdw6eytKlaJp6H4joSafQw==}
     dev: false
 
-  /@ezuikit/utils-service@1.0.1:
-    resolution: {integrity: sha512-iNjYuU7AScBJxvKBM9PjiGI2y64QJNPT/H1Fy/Y7ZIAlw4DO//TP+x50qCho+i+EOUpWLtOqBQvtRb7a0O4X4Q==}
+  /@ezuikit/utils-service@2.0.0:
+    resolution: {integrity: sha512-CBCPMw3uwd/vCh/YS+fZPMJrmg0LmCPO5bVkAon6VxjJJxwpVNcVb15sNbZyGR52JYt3wq7UEhnqHMprHnCSEA==}
     dependencies:
-      '@ezuikit/utils-tools': 1.1.0
-      dayjs: 1.11.21
+      '@ezuikit/utils-tools': 2.0.6
     dev: false
 
-  /@ezuikit/utils-tools@1.1.0:
-    resolution: {integrity: sha512-mujPtXIhZnuJrJySu1/Z6X90sMJQStZydurZcfetMCH6pqIYN4P+1w6+P8PCTR6k4LJp5nY9+eNnKa7AZ8OBKA==}
-    dev: false
-
-  /@ezuikit/utils-tools@2.0.5:
-    resolution: {integrity: sha512-7SR3kKQdColQ+Rz/PPaLzHi8Yv3RuhFUh3iMymonlO95OJSZBgjaTSX5QNeTnZIi57soNVoHByR4tS/JbMA4Wg==}
+  /@ezuikit/utils-tools@2.0.6:
+    resolution: {integrity: sha512-1XUk8IY28FpspjzgbbVEfcsRiwKx9l5ltjOYw9RYh3BK2XAKv2B2N+79RCQ1qfmjLVsHLx2H8xTwSJECSWcnqg==}
     dev: false
 
   /dayjs@1.11.21:

@@ -109,6 +109,8 @@ interface IBufferItem {
     url: string;
     /** 片段时长 */
     duration: number;
+    /** hls 片段的时间 格式 20260802000108 */
+    deviceTime?: string;
 }
 
 declare class ESCanvas {
@@ -659,7 +661,6 @@ interface EZopenPlayerOptions extends PlayerOptions {
     /**  WebSocket 重连配置 */
     reconnect?: ReconnectConfig;
     watermarkParmas?: any;
-    isHls?: boolean;
     isLive?: boolean;
 }
 declare class EZopenPlayer extends EventEmitter {
@@ -732,7 +733,7 @@ declare class EZopenPlayer extends EventEmitter {
         FECCorrect: {
             setFEC2DParam: string;
         };
-        streamInfoCB: string;
+        streamInfoCB: string; /** 全屏节点 */
     };
     logger: LoggerCls;
     i18n: I18n__default;
@@ -742,7 +743,6 @@ declare class EZopenPlayer extends EventEmitter {
      * v9.x 中会移除， 请使用 player.on, emit.emit, player.off, player.once, player.removeAllListeners
      */
     event: any;
-    isHls: boolean;
     initializing: boolean;
     loading: boolean;
     /** 播放速度 */
@@ -788,6 +788,8 @@ declare class EZopenPlayer extends EventEmitter {
     __audioInfo: any;
     _waterMarkParams: any;
     _decoderStatus: Partial<WasmDecoderStatue>;
+    /** ll-hls 回放时间 */
+    _hlsPBOSDTime: Date | null;
     _wss_info: {
         wssUrl: string;
         oParams: {
@@ -1039,6 +1041,8 @@ declare class EZopenPlayer extends EventEmitter {
      * @returns {boolean}
      */
     get isLive(): boolean;
+    get isHls(): boolean | undefined;
+    get isLLHLSPB(): boolean | undefined;
     /**
      * 片段列表
      */
@@ -1057,7 +1061,7 @@ declare class JSPlugin {
     nHeight: number;
     oStreamClient: StreamIO.default;
     g_port: number;
-    get isHls(): boolean;
+    get isHls(): boolean | undefined;
     get isLive(): boolean;
     get bPlay(): boolean;
     get iRate(): number;
