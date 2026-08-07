@@ -780,6 +780,12 @@ declare class EZopenPlayer extends EventEmitter {
     _tempPauseTime: string;
     _validateCode: string;
     _playbackRate: number;
+    /**
+     * 本次暂停是否实际使用了指令级暂停（不断流）(OPENWEB-23975)
+     * 指令下发失败会降级为断流暂停，此时为 false。
+     * 上层据此决定恢复走 resume 指令还是改写 begin 重新取流，两者必须成对。
+     */
+    _pauseSignalUsed: boolean;
     /** 视频信息 */
     __videoInfo: any;
     /** 音频信息 */
@@ -816,11 +822,12 @@ declare class EZopenPlayer extends EventEmitter {
         playURL: string;
     }): Promise<unknown>;
     /**
-     * 暂停播放 并断流???
-     * @param {boolean} bool 是否断流
+     * 暂停播放
+     * @param {boolean=} bool 是否完全停止（走 stop()）
+     * @param {boolean=} useSignal 是否使用指令级暂停（不断流），由上层按设备能力集决定 (OPENWEB-23975)
      * @returns
      */
-    pause(bool?: boolean): Promise<unknown>;
+    pause(bool?: boolean, useSignal?: boolean): Promise<unknown>;
     /**
      * 恢复
      * @param time
