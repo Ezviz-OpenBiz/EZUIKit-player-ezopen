@@ -810,6 +810,15 @@ declare class EZopenPlayer extends EventEmitter {
     /** 存储 hls 片段数据 */
     _bufferList: IBufferItem[];
     _hlsBufferShiftInterval: number | null;
+    /**
+     * HLS 错误分片重试计数。
+     *
+     * 必须挂在 player 实例上，而非 _openStream 每次执行新建的 _reconnectState：
+     * 错误重试会触发 play() -> _openStream()，后者会重建 _reconnectState 并覆盖 player._reconnectState，
+     * 若计数存在其中则每次重试都被清 0，导致 retried 恒为 0、永远命中不了 maxRetry 上限（退化为无限重试）。
+     * 仅在「正常分片到达（恢复）」与「达重试上限（give-up）」两处复位为 0。
+     */
+    _hlsErrorRetryCount: number;
     constructor(options: EZopenPlayerOptions);
     get width(): number;
     get height(): number;
