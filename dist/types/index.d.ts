@@ -731,7 +731,7 @@ declare class EZopenPlayer extends EventEmitter {
         FECCorrect: {
             setFEC2DParam: string;
         };
-        streamInfoCB: string; /** 全屏节点 */
+        streamInfoCB: string;
     };
     logger: LoggerCls;
     i18n: I18n;
@@ -743,8 +743,6 @@ declare class EZopenPlayer extends EventEmitter {
     event: any;
     initializing: boolean;
     loading: boolean;
-    /** 播放速度 */
-    playbackRate: number;
     /** 是否在播放中 */
     playing: boolean;
     /** 音量 [0-1] */
@@ -817,9 +815,17 @@ declare class EZopenPlayer extends EventEmitter {
      * 仅在「正常分片到达（恢复）」与「达重试上限（give-up）」两处复位为 0。
      */
     _hlsErrorRetryCount: number;
+    /**
+     * 0: v3-soft  1: v3-hard  2:v1-soft
+     */
+    private _decodeEngine;
     constructor(options: EZopenPlayerOptions);
     get width(): number;
     get height(): number;
+    /** 播放速度 */
+    get playbackRate(): number;
+    get decodeEngine(): 0 | 1 | 2;
+    set decodeEngine(decodeEngine: 0 | 1 | 2);
     private _playerInit;
     /**
      * @description 播放
@@ -870,10 +876,11 @@ declare class EZopenPlayer extends EventEmitter {
      * @description 通过canvas截图
      * @param {string} name 文件名 默认时间戳(new Date().getTime())
      * @param {"jpeg"} fmt 图片格式  只支持 jpeg
+     * @param {number} quality 图片质量， 默认 0.7
      * @param {boolean} download 是否直接下载 默认不直接下载 false
      * @returns 返回base64字符
      */
-    snapshotByCanvas(name?: string, fmt?: SnapshotFmt, download?: boolean): Promise<IResult<{
+    snapshotByCanvas(name?: string, fmt?: SnapshotFmt, quality?: number, download?: boolean): Promise<IResult<{
         fileName?: string | undefined;
         base64?: string | undefined;
     } | null>>;
