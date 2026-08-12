@@ -11,6 +11,8 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+*.map
+
 coverage
 
 node_modules
