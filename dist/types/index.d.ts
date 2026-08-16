@@ -109,6 +109,8 @@ interface IBufferItem {
     duration: number;
     /** hls 片段的时间 格式 20260802000108 */
     deviceTime?: string;
+    /** hls 片段类型 */
+    type?: "map" | "part" | "segment";
 }
 
 declare class ESCanvas {
@@ -792,6 +794,7 @@ declare class EZopenPlayer extends EventEmitter {
     _decoderStatus: Partial<WasmDecoderStatue>;
     /** ll-hls 回放时间 */
     _hlsPBOSDTime: Date | null;
+    _end: boolean;
     _wss_info: {
         wssUrl: string;
         oParams: {
@@ -1068,6 +1071,7 @@ declare class EZopenPlayer extends EventEmitter {
      * 片段列表
      */
     get segments(): any;
+    get end(): boolean;
 }
 
 export { FECCorrect, PluginManager, EZopenPlayer as default };
