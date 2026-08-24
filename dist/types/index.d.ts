@@ -769,6 +769,7 @@ declare class EZopenPlayer extends EventEmitter {
     duration: number;
     _oStreamClient: StreamIO;
     _aHead: Uint8Array;
+    _latestMap: Uint8Array;
     /** @private */
     _detectTimer: any;
     private _wasmDecoderInfo;
@@ -828,6 +829,10 @@ declare class EZopenPlayer extends EventEmitter {
     /** 播放速度 */
     get playbackRate(): number;
     get decodeEngine(): 0 | 1 | 2;
+    /**
+     * 不允许外部设置
+     * 0: v3-soft 1: v3-hard 2:v1-soft
+     */
     set decodeEngine(decodeEngine: 0 | 1 | 2);
     private _playerInit;
     /**
@@ -1065,7 +1070,13 @@ declare class EZopenPlayer extends EventEmitter {
      * @returns {boolean}
      */
     get isLive(): boolean;
+    /**
+     * 播放地址是 hls
+     */
     get isHls(): boolean | undefined;
+    /**
+     * 播放地址是萤石的 ll-hls 回放
+     */
     get isLLHLSPB(): boolean | undefined;
     /**
      * 片段列表
