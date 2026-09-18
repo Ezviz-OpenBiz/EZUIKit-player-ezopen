@@ -5,7 +5,7 @@ import I18n from '@ezuikit/utils-i18n';
 import Service, { DeviceCapacityRes, DeviceInfoRes } from '@ezuikit/utils-service';
 import { EzopenURL } from '@ezuikit/utils-tools';
 import { PlayerPluginRecord } from '@ezuikit/player-plugin-record';
-import StreamIO from '@ezuikit/stream-io';
+import StreamIO, { StreamTransport, IWebTransportOptions } from '@ezuikit/stream-io';
 import EventEmitter from 'eventemitter3';
 
 /**
@@ -661,6 +661,19 @@ interface EZopenPlayerOptions extends PlayerOptions {
     /**  WebSocket 重连配置 */
     reconnect?: ReconnectConfig;
     watermarkParmas?: any;
+    /**
+     * 非 HLS 取流的传输方式，默认 "jsdecoder"（现状行为）
+     *
+     * - "auto"：能力允许时竞速探测 WebTransport / jsdecoder，择快者
+     * - "webtransport"：强制 WebTransport，不支持或握手失败直接报错，不静默回退
+     * - "jsdecoder"：强制 jsdecoder（流服务的 WebSocket 私有协议链路）
+     *
+     * 选择 "auto" / "webtransport" 时必须同时配置 `webtransport.endpoint`：
+     * WT 端口与 WSS 端口不同，不能由取流地址协议替换推导。
+     */
+    transport?: StreamTransport;
+    /** WebTransport 配置，仅 transport 为 "auto" / "webtransport" 时生效 */
+    webtransport?: IWebTransportOptions;
     isLive?: boolean;
 }
 declare class EZopenPlayer extends EventEmitter {
@@ -733,7 +746,8 @@ declare class EZopenPlayer extends EventEmitter {
         FECCorrect: {
             setFEC2DParam: string;
         };
-        streamInfoCB: string;
+        /** 全屏节点 */
+        streamInfoCB: string; /** 指定解码类型， v1 软解  v3 包括硬解和多线程 */
     };
     logger: LoggerCls;
     i18n: I18n;

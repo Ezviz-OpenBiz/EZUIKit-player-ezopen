@@ -1,87 +1,102 @@
-lockfileVersion: '6.0'
+lockfileVersion: '9.0'
 
 settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-dependencies:
-  '@ezuikit/player-plugin-record':
-    specifier: 9.2.0-beta.1
-    version: 9.2.0-beta.1
-  '@ezuikit/utils-i18n':
-    specifier: ^2.0.1
-    version: 2.0.1
-  '@ezuikit/utils-logger':
-    specifier: ^2.0.1
-    version: 2.0.1
-  '@ezuikit/utils-service':
-    specifier: 2.0.0
-    version: 2.0.0
-  '@ezuikit/utils-tools':
-    specifier: ^2.0.6
-    version: 2.0.6
-  dayjs:
-    specifier: ^1.11.10
-    version: 1.11.21
-  deepmerge:
-    specifier: ^4.3.1
-    version: 4.3.1
-  eventemitter3:
-    specifier: ^5.0.1
-    version: 5.0.4
-  screenfull:
-    specifier: ^5.2.0
-    version: 5.2.0
-  ua-parser-js:
-    specifier: 1.0.37
-    version: 1.0.37
+importers:
+
+  .:
+    dependencies:
+      '@ezuikit/player-plugin-record':
+        specifier: 9.2.0-beta.1
+        version: 9.2.0-beta.1
+      '@ezuikit/utils-i18n':
+        specifier: ^2.0.1
+        version: 2.0.1
+      '@ezuikit/utils-logger':
+        specifier: ^2.1.0
+        version: 2.1.0
+      '@ezuikit/utils-service':
+        specifier: 2.0.0
+        version: 2.0.0
+      '@ezuikit/utils-tools':
+        specifier: ^2.0.7
+        version: 2.0.7
+      dayjs:
+        specifier: ^1.11.10
+        version: 1.11.23
+      deepmerge:
+        specifier: ^4.3.1
+        version: 4.3.1
+      eventemitter3:
+        specifier: ^5.0.1
+        version: 5.0.4
+      screenfull:
+        specifier: ^5.2.0
+        version: 5.2.0
+      ua-parser-js:
+        specifier: 1.0.37
+        version: 1.0.37
 
 packages:
 
-  /@ezuikit/player-plugin-record@9.2.0-beta.1:
+  '@ezuikit/player-plugin-record@9.2.0-beta.1':
     resolution: {integrity: sha512-SA7IlSckKfoW73QhW9CjirnSRQHYYgstLIAhWzbL9/rvhj0AJ84NgvzRfySN10pkk7lZ485XQQwyBJgZFbz/6w==}
-    dependencies:
-      '@ezuikit/utils-tools': 2.0.6
-    dev: false
 
-  /@ezuikit/utils-i18n@2.0.1:
+  '@ezuikit/utils-i18n@2.0.1':
     resolution: {integrity: sha512-846z2bDpCxioTBO3KG8Uw8QUFa6hzquSzmZKWPO6fjT3P4v6zNnXRz+Z3JCPlXnc4eesi03A+JmMAU6m5KI4gg==}
-    dependencies:
-      deepmerge: 4.3.1
-    dev: false
 
-  /@ezuikit/utils-logger@2.0.1:
-    resolution: {integrity: sha512-AeLLR9ZQJkSJFfCicpkVBcnOE4zyQMp4W4997sTEGyF3k3I8Upkfn4Cye2A44MIphdw6eytKlaJp6H4joSafQw==}
-    dev: false
+  '@ezuikit/utils-logger@2.1.0':
+    resolution: {integrity: sha512-Kj/vTddGWhRhOApo/QmesxqEPxkSwhwakQGZx3b3xLI8Dou2NMg8iNA+9aXU4jT5uT13TmdCn0oMC8Kbq6BMGQ==}
 
-  /@ezuikit/utils-service@2.0.0:
+  '@ezuikit/utils-service@2.0.0':
     resolution: {integrity: sha512-CBCPMw3uwd/vCh/YS+fZPMJrmg0LmCPO5bVkAon6VxjJJxwpVNcVb15sNbZyGR52JYt3wq7UEhnqHMprHnCSEA==}
-    dependencies:
-      '@ezuikit/utils-tools': 2.0.6
-    dev: false
 
-  /@ezuikit/utils-tools@2.0.6:
-    resolution: {integrity: sha512-1XUk8IY28FpspjzgbbVEfcsRiwKx9l5ltjOYw9RYh3BK2XAKv2B2N+79RCQ1qfmjLVsHLx2H8xTwSJECSWcnqg==}
-    dev: false
+  '@ezuikit/utils-tools@2.0.7':
+    resolution: {integrity: sha512-phxKRP17FunG0cwLLK951V18x96EzwO5XSfZ+FfI4jv8agbujV5HtY709lpXM0H5j4XC7pZryT70wjdRFASQgA==}
 
-  /dayjs@1.11.21:
-    resolution: {integrity: sha512-98IT+HOahAisibz/yjKbzuOBwYcjJ7BCLPzARyHiyEBmRz4fatF+KPJszEHXsGYjUG234aH/cOjW1wwTbKUZlA==}
-    dev: false
+  dayjs@1.11.23:
+    resolution: {integrity: sha512-QDTCU0M0MxR3hQfnlDJfwekQiaanm1ubOD231u73WBckQ/fsamwRLiE2GBz6D3a/xF1NgfiDLJjXBa1hYOYTtQ==}
 
-  /deepmerge@4.3.1:
+  deepmerge@4.3.1:
     resolution: {integrity: sha512-3sUqbMEc77XqpdNO7FRyRog+eW3ph+GYCbj+rK+uYyRMuwsVy0rMiVtPn+QJlKFvWP/1PYpapqYn0Me2knFn+A==}
     engines: {node: '>=0.10.0'}
-    dev: false
 
-  /eventemitter3@5.0.4:
+  eventemitter3@5.0.4:
     resolution: {integrity: sha512-mlsTRyGaPBjPedk6Bvw+aqbsXDtoAyAzm5MO7JgU+yVRyMQ5O8bD4Kcci7BS85f93veegeCPkL8R4GLClnjLFw==}
-    dev: false
 
-  /screenfull@5.2.0:
+  screenfull@5.2.0:
     resolution: {integrity: sha512-9BakfsO2aUQN2K9Fdbj87RJIEZ82Q9IGim7FqM5OsebfoFC6ZHXgDq/KvniuLTPdeM8wY2o6Dj3WQ7KeQCj3cA==}
     engines: {node: '>=0.10.0'}
-    dev: false
 
-  /ua-parser-js@1.0.37:
+  ua-parser-js@1.0.37:
     resolution: {integrity: sha512-bhTyI94tZofjo+Dn8SN6Zv8nBDvyXTymAdM3LDI/0IboIUwTu1rEhW7v2TfiVsoYWgkQ4kOVqnI8APUFbIQIFQ==}
-    dev: false
+
+snapshots:
+
+  '@ezuikit/player-plugin-record@9.2.0-beta.1':
+    dependencies:
+      '@ezuikit/utils-tools': 2.0.7
+
+  '@ezuikit/utils-i18n@2.0.1':
+    dependencies:
+      deepmerge: 4.3.1
+
+  '@ezuikit/utils-logger@2.1.0': {}
+
+  '@ezuikit/utils-service@2.0.0':
+    dependencies:
+      '@ezuikit/utils-tools': 2.0.7
+
+  '@ezuikit/utils-tools@2.0.7': {}
+
+  dayjs@1.11.23: {}
+
+  deepmerge@4.3.1: {}
+
+  eventemitter3@5.0.4: {}
+
+  screenfull@5.2.0: {}
+
+  ua-parser-js@1.0.37: {}
