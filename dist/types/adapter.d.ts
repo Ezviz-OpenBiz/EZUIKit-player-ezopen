@@ -1167,7 +1167,7 @@ declare class JSPlugin {
     JS_Resize(width: any, height: any): void;
     JS_GetSDKVersion(): any;
     JS_Stop(flag: any): Promise<unknown>;
-    JS_DestroyWorker(): void;
+    JS_DestroyWorker(): Promise<void>;
     JS_Speed(nextRate: any): void;
     JS_Seek(iWndNum: any, szStartTime: any, szStopTime: any): Promise<void>;
     /**
