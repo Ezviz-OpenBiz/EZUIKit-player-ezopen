@@ -88,9 +88,53 @@ interface ReconnectConfig {
     maxRetry?: number;
     /**
      * 重试延迟时间（毫秒）
+     *
+     * @deprecated 已由指数退避取代。仅保留一轮兼容：传入时会被映射为 `firstDelay`。
      * @default 1500
      */
     retryDelay?: number;
+    /**
+     * 首次退避基数（毫秒）
+     *
+     * @internal 内核内部参数，不作为公开初始化参数对外承诺，可能在后续版本调整。
+     * @default 4000
+     */
+    firstDelay?: number;
+    /**
+     * 退避指数因子
+     *
+     * @internal 同上
+     * @default 2
+     */
+    backoffFactor?: number;
+    /**
+     * 退避抖动比例，0.2 表示 ±20%
+     *
+     * @internal 同上
+     * @default 0.2
+     */
+    jitterRatio?: number;
+    /**
+     * 单次退避上限（毫秒）
+     *
+     * @internal 同上
+     * @default 20000
+     */
+    maxDelay?: number;
+    /**
+     * 单次断链的总重试窗口（毫秒），超过即停止重试
+     *
+     * @internal 同上
+     * @default 60000
+     */
+    maxRetryWindow?: number;
+    /**
+     * 旧连接停止的等待上限（毫秒），超时按 fail-closed 处理
+     *
+     * @internal 同上
+     * @default 10000
+     */
+    stopTimeout?: number;
     /**
      * 数据流超时时间（毫秒）- 超过此时间未收到数据则触发重连
      * @default 10000
@@ -748,8 +792,7 @@ declare class EZopenPlayer extends EventEmitter {
         FECCorrect: {
             setFEC2DParam: string;
         };
-        /** 全屏节点 */
-        streamInfoCB: string; /** 指定解码类型， v1 软解  v3 包括硬解和多线程 */
+        streamInfoCB: string;
     };
     logger: LoggerCls;
     i18n: I18n__default;
