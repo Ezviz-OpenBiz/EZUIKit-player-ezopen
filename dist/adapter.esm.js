@@ -1,6 +1,6 @@
 /*
 *
-* JsPlugin.js v8.1.16-alpha.7
+* JsPlugin.js v8.1.16-alpha.8
 * Copyright (c) 2026-9-25 Ezviz-OpenBiz
 * Released under MIT the License.
 *
