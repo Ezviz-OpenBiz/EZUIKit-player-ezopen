@@ -867,6 +867,16 @@ interface WaterMarkParams {
  * 协调后再开启，否则会造成 A 层 + 内核双重重连。开启方式：player._options.streamReconnect.enabled=true。
  */
 type ReconnectSource = 'errorCode' | 'socketClose' | 'socketError';
+/**
+ * `schedule()` 的处置结果，供调用点决定如何向上层上报断链。
+ *
+ * - `scheduled`：本次断链已被内核接管，已排程退避重连；
+ * - `inflight`：已有重连流程在跑，本次被单飞守卫合并（同样属于「内核已接管」）；
+ * - `skipped`：内核不接管（未启用 / 致命码 / 1000 正常关闭），上层按原逻辑处理；
+ * - `exhausted`：额度已耗尽，`onExhausted` 已在本次调用中同步完成交棒上报，
+ *   调用点**不应再重复上报**，否则 A 层会收到两次错误事件。
+ */
+type ScheduleResult = 'scheduled' | 'inflight' | 'skipped' | 'exhausted';
 interface ReconnectTrigger {
     source: ReconnectSource;
     code?: number | string;
@@ -938,6 +948,15 @@ declare class ReconnectController {
     private _windowStart;
     constructor(params: Partial<ReconnectParams> | undefined, hooks: ReconnectHooks);
     get inFlight(): boolean;
+    /**
+     * 重连流程是否处于活跃态（**含已排程但尚未触发的退避等待期**）。
+     *
+     * 与 `inFlight` 的区别：`inFlight` 只在 `doReconnect()` 执行期间为 true，
+     * 退避等待那几秒是 false。上层若用 `inFlight` 判断「是否要把断链错误抛给业务方」，
+     * 退避等待窗口内会漏判，导致 A 层 `_reload` 抢先切机房、把本次退避重连 cancel 掉。
+     * 判定「内核是否已接管本次断链」必须用本 getter。
+     */
+    get isActive(): boolean;
     get retryCount(): number;
     get generation(): number;
     /** 判断错误码是否致命（不重连） */
@@ -946,8 +965,13 @@ declare class ReconnectController {
     isRecoverable(trigger: ReconnectTrigger): boolean;
     /** 计算第 attempt 次（1-based）重连的退避等待（ms） */
     computeDelay(attempt: number): number;
-    /** 收到可恢复断链时调度一次重连（含单飞/限额/退避判定） */
-    schedule(trigger: ReconnectTrigger): void;
+    /**
+     * 收到可恢复断链时调度一次重连（含单飞/限额/退避判定）。
+     *
+     * 返回处置结果，调用点据此决定是否/如何向上层上报本次断链，避免
+     * 「内核正在重连、A 层却同时切机房」与「交棒事件被重复上报」两类问题。
+     */
+    schedule(trigger: ReconnectTrigger): ScheduleResult;
     private _runAttempt;
     private _exhaust;
     /** 重连成功（收到有效播放/首帧）后复位 */
