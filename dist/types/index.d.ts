@@ -86,53 +86,9 @@ interface ReconnectConfig {
     maxRetry?: number;
     /**
      * 重试延迟时间（毫秒）
-     *
-     * @deprecated 已由指数退避取代。仅保留一轮兼容：传入时会被映射为 `firstDelay`。
      * @default 1500
      */
     retryDelay?: number;
-    /**
-     * 首次退避基数（毫秒）
-     *
-     * @internal 内核内部参数，不作为公开初始化参数对外承诺，可能在后续版本调整。
-     * @default 4000
-     */
-    firstDelay?: number;
-    /**
-     * 退避指数因子
-     *
-     * @internal 同上
-     * @default 2
-     */
-    backoffFactor?: number;
-    /**
-     * 退避抖动比例，0.2 表示 ±20%
-     *
-     * @internal 同上
-     * @default 0.2
-     */
-    jitterRatio?: number;
-    /**
-     * 单次退避上限（毫秒）
-     *
-     * @internal 同上
-     * @default 20000
-     */
-    maxDelay?: number;
-    /**
-     * 单次断链的总重试窗口（毫秒），超过即停止重试
-     *
-     * @internal 同上
-     * @default 60000
-     */
-    maxRetryWindow?: number;
-    /**
-     * 旧连接停止的等待上限（毫秒），超时按 fail-closed 处理
-     *
-     * @internal 同上
-     * @default 10000
-     */
-    stopTimeout?: number;
     /**
      * 数据流超时时间（毫秒）- 超过此时间未收到数据则触发重连
      * @default 10000
@@ -143,6 +99,19 @@ interface ReconnectConfig {
      * @default 3000
      */
     dataCheckInterval?: number;
+    /**
+     * 取流超时（timeout）/ 网络失败（networkerror）后的重试是否交给上层
+     *
+     * 开启后这两类失败不再按 `maxRetry` 原地址重连，由上层决定如何重试（如 ezuikit-js 调用 `_reload` 重新加载）：
+     * - 网络失败包括：取流连接报错、连接异常断开（close code 非 1000 / 1005，如 1006）、重连时取流请求失败
+     * - 已收到流头：经 `pluginErrorHandler` 上报 1005 / 1004，`data.reason` 为 `"timeout"` / `"networkerror"`，
+     *   异常断开另带 `data.closeCode`
+     * - 流头之前：开流的 promise 以 `{ reason, closeCode? }` reject，不再重复上报 `pluginErrorHandler`
+     *
+     * 正常关闭（可能是服务端推完回放区间）仍按 `maxRetry` 原地址重连，HLS 不受影响。
+     * @default false
+     */
+    delegate?: boolean;
 }
 interface IBufferItem {
     /** 片段数据  */
@@ -708,7 +677,7 @@ interface EZopenPlayerOptions extends PlayerOptions {
     /**
      * 非 HLS 取流的传输方式，默认 "jsdecoder"（现状行为）
      *
-     * - "auto"：能力允许时竞速探测 WebTransport / jsdecoder，择快者
+     * -  // "auto"：能力允许时竞速探测 WebTransport / jsdecoder，择快者 (不支持)
      * - "webtransport"：强制 WebTransport，不支持或握手失败直接报错，不静默回退
      * - "jsdecoder"：强制 jsdecoder（流服务的 WebSocket 私有协议链路）
      *
@@ -716,7 +685,7 @@ interface EZopenPlayerOptions extends PlayerOptions {
      * WT 端口与 WSS 端口不同，不能由取流地址协议替换推导。
      */
     transport?: StreamTransport;
-    /** WebTransport 配置，仅 transport 为 "auto" / "webtransport" 时生效 */
+    /** WebTransport 配置，仅 transport 为 "webtransport" 时生效 */
     webtransport?: IWebTransportOptions;
     isLive?: boolean;
 }
