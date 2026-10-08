@@ -863,8 +863,9 @@ interface WaterMarkParams {
  * - 成功复位：onSuccess() 清零计数、取消定时器、递增 generation 使陈旧回调失效；
  * - 分类：致命码（与 A 层 reloadCodeBalckList 对齐）与正常关闭(1000)不重连。
  *
- * 【重要】默认 enabled=false。内核重连必须与 A 层 ezuikit_js 的 `_reload`（备用机房地址重连）
- * 协调后再开启，否则会造成 A 层 + 内核双重重连。开启方式：player._options.streamReconnect.enabled=true。
+ * 【默认开启】enabled 默认 true。内核退避与 A 层 ezuikit_js 的 `_reload`（备用机房地址重连）
+ * 已通过 reconnecting/exhausted 守卫实现串行接力（内核退避在途时 A 层不介入，退避耗尽后交棒 _reload），
+ * 不会双重重连。如需关闭：player._options.streamReconnect.enabled=false。
  */
 type ReconnectSource = 'errorCode' | 'socketClose' | 'socketError';
 /**
@@ -1122,9 +1123,9 @@ declare class EZopenPlayer implements PlayerInterface {
         };
     };
     /**
-     * 7005 断链重连控制器（§5.2）。默认不创建（opt-in）：
-     * 仅当 options.streamReconnect.enabled 为真时由 play.ts 惰性创建。
-     * 未启用时保持 null，所有调用点用 `?.` 空守卫，行为与原逻辑一致。
+     * 7005 断链重连控制器（§5.2）。默认开启：
+     * 业务方未显式传 options.streamReconnect.enabled === false 时，由 play.ts 惰性创建。
+     * 显式关闭时保持 null，所有调用点用 `?.` 空守卫。
      */
     _reconnectController: ReconnectController | null;
     __fCallback: Zoom3DCallback;
