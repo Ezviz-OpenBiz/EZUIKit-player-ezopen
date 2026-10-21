@@ -74,44 +74,83 @@ interface IFrameInfo {
 }
 /**
  * WebSocket 重连配置
+ *
+ * 重试与检测已整体下沉到取流层（`@ezuikit/stream-io`）：io 负责错误码 / 取流超时 / 网络错误 /
+ * 心跳断供的判定与重试，内核不再自带重连状态机（退避、总重试窗口、代次、委托上层换机房）。
+ * 本配置的 `enabled` / `maxRetry` / `retryDelay` / `dataTimeout` 原样映射为 io 的重试选项
+ * （见 `reconnect/config.ts` 的 `resolveStreamRetry`），其余字段只为兼容旧调用方保留、已无作用。
  */
 interface ReconnectConfig {
     /**
      * 是否启用自动重连
+     *
+     * 映射为 io：`false` 时 `maxRetries` 置 0（只关重试，检测仍照常，失败经 `onError` 交回）。
      * @default true
      */
     enabled?: boolean;
     /**
-     * 最大重试次数
-     * @default 3
+     * 最大重试次数（不含首次播放）
+     *
+     * 映射为 io 的 `maxRetries`：`0` 关重试、`-1` 不限次。io 以「收到数据即清零」计连续重试次数。
+     * @default 5
      */
     maxRetry?: number;
     /**
      * 重试延迟时间（毫秒）
-     * @default 1500
+     *
+     * 映射为 io 的 `retryDelay`（错误码 / 取流超时 / 心跳断供的重试延时；网络错误用 io 的 `networkRetryDelay`，缺省跟随它）。
+     * @default 1000
      */
     retryDelay?: number;
     /**
+     * @deprecated 内核重连状态机已移除，退避由 io 的固定 `retryDelay` 取代，本字段无作用。保留仅为兼容旧配置。
+     */
+    firstDelay?: number;
+    /**
+     * @deprecated 内核重连状态机已移除，io 不做指数退避，本字段无作用。保留仅为兼容旧配置。
+     */
+    backoffFactor?: number;
+    /**
+     * @deprecated 内核重连状态机已移除，io 不做退避抖动，本字段无作用。保留仅为兼容旧配置。
+     */
+    jitterRatio?: number;
+    /**
+     * @deprecated 内核重连状态机已移除，io 不做退避上限，本字段无作用。保留仅为兼容旧配置。
+     */
+    maxDelay?: number;
+    /**
+     * @deprecated 内核重连状态机已移除，io 以「收到数据即清零」的连续重试次数（`maxRetry`）约束，
+     * 不再有总重试窗口。本字段无作用，保留仅为兼容旧配置。
+     */
+    maxRetryWindow?: number;
+    /**
+     * @deprecated 重连不再由内核串行停流，本字段无作用。保留仅为兼容旧配置。
+     */
+    stopTimeout?: number;
+    /**
      * 数据流超时时间（毫秒）- 超过此时间未收到数据则触发重连
+     *
+     * 检测由取流层（`@ezuikit/stream-io`）完成，本值同时作为它的：
+     * - 心跳检查：取流中最后一份数据之后满该时长仍无新数据（断供）
+     * - 取流超时：建连成功后该时长内一份数据都没有（取流层下限 8000ms）
+     *
+     * `0` 或关闭重连（`enabled: false`）即不检测。HLS 不受此项影响。
      * @default 10000
      */
     dataTimeout?: number;
     /**
      * 数据流检测间隔（毫秒）
-     * @default 3000
+     *
+     * @deprecated 已无作用：取流层按最后一次收到数据的时刻精确计时，不再轮询。保留仅为兼容旧配置
+     * @default 10000
      */
     dataCheckInterval?: number;
     /**
-     * 取流超时（timeout）/ 网络失败（networkerror）后的重试是否交给上层
+     * @deprecated 内核重连状态机已移除，io 用尽重试后一律经 `onError` / reject 把失败交给上层，
+     * 等价于本字段恒为 `true`。保留仅为兼容旧配置，传任何值都不再改变行为。
      *
-     * 开启后这两类失败不再按 `maxRetry` 原地址重连，由上层决定如何重试（如 ezuikit-js 调用 `_reload` 重新加载）：
-     * - 网络失败包括：取流连接报错、连接异常断开（close code 非 1000 / 1005，如 1006）、重连时取流请求失败
-     * - 已收到流头：经 `pluginErrorHandler` 上报 1005 / 1004，`data.reason` 为 `"timeout"` / `"networkerror"`，
-     *   异常断开另带 `data.closeCode`
-     * - 流头之前：开流的 promise 以 `{ reason, closeCode? }` reject，不再重复上报 `pluginErrorHandler`
-     *
-     * 正常关闭（可能是服务端推完回放区间）仍按 `maxRetry` 原地址重连，HLS 不受影响。
-     * @default false
+     * 影响：以前 `delegate: false` 时服务端错误码（如 7005）走内核同机房重连、用尽才交上层；
+     * 现在这类失败由 io 按重试预算（`maxRetry`）重试，用尽即交上层，不再有「同机房优先」语义。
      */
     delegate?: boolean;
 }
@@ -830,6 +869,12 @@ declare class EZopenPlayer extends EventEmitter {
             playURL: string;
         };
     };
+    /**
+     * 取流会话状态（由 _openStream 设置）
+     *
+     * 重试已下沉到 io，这里只承载非重试状态：会话令牌（isStaleClosure 用其引用判流是否被切换）、
+     * isIntentionallyClosed（主动关闭标记，stop/pause/destroy 与 SDK 都会读写）、clearAllTimers、streamErrorCode。
+     */
     _reconnectState: any;
     __fCallback: Zoom3DCallback;
     __b3DZoom: boolean;
@@ -838,15 +883,6 @@ declare class EZopenPlayer extends EventEmitter {
     /** 存储 hls 片段数据 */
     _bufferList: IBufferItem[];
     _hlsBufferShiftInterval: number | null;
-    /**
-     * HLS 错误分片重试计数。
-     *
-     * 必须挂在 player 实例上，而非 _openStream 每次执行新建的 _reconnectState：
-     * 错误重试会触发 play() -> _openStream()，后者会重建 _reconnectState 并覆盖 player._reconnectState，
-     * 若计数存在其中则每次重试都被清 0，导致 retried 恒为 0、永远命中不了 maxRetry 上限（退化为无限重试）。
-     * 仅在「正常分片到达（恢复）」与「达重试上限（give-up）」两处复位为 0。
-     */
-    _hlsErrorRetryCount: number;
     /**
      * 0: v3-soft  1: v3-hard  2:v1-soft
      */
