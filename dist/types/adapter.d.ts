@@ -17,6 +17,25 @@ interface PlayerEnv {
     domain: string;
     wsUrl?: string;
 }
+/** 取流层重试阶段 */
+type PlayerRetryStage = "retry" | "reconnected" | "giveup";
+/** 触发取流层重试的原因 */
+type PlayerRetryReason = "errorcode" | "timeout" | "networkerror" | "heartbeat";
+/**
+ * 播放器重试状态回调载荷
+ *
+ * `reconnected` 只表示传输连接已重新建立并已补发取流命令，不代表媒体已经恢复；
+ * 真正恢复播放仍以之后收到流头/首帧为准。
+ */
+interface PlayerRetryInfo {
+    stage: PlayerRetryStage;
+    reason: PlayerRetryReason;
+    retryCount: number;
+    delay: number;
+    transport: "hls" | "jsdecoder" | "webtransport";
+    errorCode: number | string | null;
+}
+type PlayerRetryCallback = (info: Readonly<PlayerRetryInfo>) => void | Promise<void>;
 interface PlayerOptions {
     /**
      * dom id
@@ -54,6 +73,17 @@ interface PlayerOptions {
      * 默认值 1
      */
     streamInfoCBType: 0 | 1;
+    /**
+     * 取流层重试状态回调
+     *
+     * - `retry`：已决定重试，旧连接关闭后将按 `delay` 重开
+     * - `reconnected`：播放中的传输连接已重建，媒体数据尚未确认恢复；起播阶段的重试成功
+     *   不额外回调该阶段，而是由原 `play/openStream` Promise 与首帧回调表示成功
+     * - `giveup`：重试预算用尽或遇到不可重试错误
+     *
+     * 回调仅用于观察状态；回调抛错不会中断播放器内部重试。
+     */
+    onRetry?: PlayerRetryCallback;
 }
 interface IResult<T> {
     data?: T;
