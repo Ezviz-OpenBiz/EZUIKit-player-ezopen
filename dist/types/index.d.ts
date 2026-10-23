@@ -34,6 +34,14 @@ interface PlayerRetryInfo {
     errorCode: number | string | null;
 }
 type PlayerRetryCallback = (info: Readonly<PlayerRetryInfo>) => void | Promise<void>;
+/** 子码流因服务端拒绝而切到主码流后的通知载荷 */
+interface PlayerStreamSwitchInfo {
+    errorCode: number | string;
+    fromStream: 2;
+    toStream: 1;
+    transport: "jsdecoder" | "webtransport";
+}
+type PlayerStreamSwitchCallback = (info: Readonly<PlayerStreamSwitchInfo>) => void | Promise<void>;
 interface PlayerOptions {
     /**
      * dom id
@@ -82,6 +90,11 @@ interface PlayerOptions {
      * 回调仅用于观察状态；回调抛错不会中断播放器内部重试。
      */
     onRetry?: PlayerRetryCallback;
+    /**
+     * `forceStreamSwitch` 成功把直播子码流切到主码流并建立新连接后的通知。
+     * 回调只包含错误码、切换前后码流及传输类型，不包含可能携带鉴权信息的播放地址。
+     */
+    onForceStreamSwitch?: PlayerStreamSwitchCallback;
 }
 interface IResult<T> {
     data?: T;
@@ -127,7 +140,7 @@ interface ReconnectConfig {
      * 重试延迟时间（毫秒）
      *
      * 映射为 io 的 `retryDelay`（错误码 / 取流超时 / 心跳断供的重试延时；网络错误用 io 的 `networkRetryDelay`，缺省跟随它）。
-     * @default 1000
+     * @default 1500
      */
     retryDelay?: number;
     /**
@@ -757,6 +770,15 @@ interface EZopenPlayerOptions extends PlayerOptions {
     /** WebTransport 配置，仅 transport 为 "webtransport" 时生效 */
     webtransport?: IWebTransportOptions;
     isLive?: boolean;
+    /**
+     * 取流失败时是否允许强制切换码流，默认 true（只有显式传 false 才关闭）。
+     * 目前仅作用于**预览**遇到错误码 6106 / 5451：当前取的是子码流时自动切到主码流重新取流，
+     * 而不是去切备用机房（换机房对该错误无效）。
+     *
+     * 由 `api/__options.ts` 随 `player._options` 透传给 `@ezuikit/stream-io`，
+     * 实际的改写与重取在 io 门面完成（见该包 README「自动切主码流」）。
+     */
+    forceStreamSwitch?: boolean;
 }
 declare class EZopenPlayer extends EventEmitter {
     _options: EZopenPlayerOptions | undefined;
@@ -1178,4 +1200,4 @@ declare class EZopenPlayer extends EventEmitter {
 }
 
 export { FECCorrect, PluginManager, EZopenPlayer as default };
-export type { EZopenPlayerOptions, GlobalBaseTimeParams, IFrameInfo, IResult, MirrorFlipCommand, PlayerEnv, PlayerRetryCallback, PlayerRetryInfo, PlayerRetryReason, PlayerRetryStage, WasmDecoderStatue, WaterMarkParams };
+export type { EZopenPlayerOptions, GlobalBaseTimeParams, IFrameInfo, IResult, MirrorFlipCommand, PlayerEnv, PlayerRetryCallback, PlayerRetryInfo, PlayerRetryReason, PlayerRetryStage, PlayerStreamSwitchCallback, PlayerStreamSwitchInfo, WasmDecoderStatue, WaterMarkParams };
