@@ -505,7 +505,7 @@ declare const EVENTCALLBACK: unique symbol;
 declare const SHAPESTYLE: unique symbol;
 declare const POLYGONDRAWING: unique symbol;
 
-declare const _default: any;
+declare const JSPlayCtrl: any;
 
 interface IPlayerWindowOptions {
     container: HTMLElement;
@@ -856,7 +856,7 @@ declare class EZopenPlayer extends EventEmitter {
     };
     logger: LoggerCls;
     i18n: I18n__default;
-    wasmplayer: typeof _default;
+    wasmplayer: typeof JSPlayCtrl;
     /**
      * @deprecated
      * v9.x 中会移除， 请使用 player.on, emit.emit, player.off, player.once, player.removeAllListeners
