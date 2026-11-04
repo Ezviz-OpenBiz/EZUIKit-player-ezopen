@@ -720,6 +720,28 @@ interface WaterMarkParams {
     };
 }
 
+/**
+ * 设置图片水印参数
+ */
+interface WaterMarkImageParams {
+    /** 图片二进制数据（必填） */
+    imageData: ArrayBuffer | Uint8Array;
+    /** 图片类型（必填），例如：'jpeg'、'jpg'、'png'、'bmp'、'webp'、'gif'（gif 自动轮询）、'avif' */
+    imageType: string;
+    /**
+     * 图片在视频中的位置，取值范围 [0,1]，左上角是原点。
+     * 例如取 (0,1,0,1) 时会覆盖整个视频画面；取值异常（<0 或 >1）则默认显示在 (0,0.1,0,0.1) 的位置。
+     */
+    rectPos?: {
+        fLeft: number;
+        fRight: number;
+        fTop: number;
+        fBottom: number;
+    };
+    /** 图片透明度，取值范围 [0,1]。0 完全透明，1 完全不透明；取值异常（<0 或 >1）则默认为 1 */
+    alpha?: number;
+}
+
 interface GlobalBaseTimeParams {
     year: number;
     month: number;
@@ -911,6 +933,7 @@ declare class EZopenPlayer extends EventEmitter {
     /** 音频信息 */
     __audioInfo: any;
     _waterMarkParams: any;
+    _waterMarkImageParams: WaterMarkImageParams | null;
     _decoderStatus: Partial<WasmDecoderStatue>;
     /** ll-hls 回放时间 */
     _hlsPBOSDTime: Date | null;
@@ -1155,6 +1178,12 @@ declare class EZopenPlayer extends EventEmitter {
      */
     setWaterMark(params: WaterMarkParams): Promise<unknown>;
     /**
+     * @description 设置图片水印，传 null 关闭
+     * @param {WaterMarkImageParams | null} params
+     * @returns {Promise<any>}
+     */
+    setWaterMarkImage(params: WaterMarkImageParams | null): Promise<unknown>;
+    /**
      * @description 设置抗锯齿开关
      */
     setAntialias(flag: 0 | 1 | 2): any;
@@ -1330,6 +1359,16 @@ declare class JSPlugin {
      * @returns {Promise<object>}
      */
     JS_SetWaterMarkFont(params: object): Promise<object>;
+    /**
+     * @description 设置图片水印，传 null 关闭
+     * @param {object | null} params
+     * imageData：图片二进制数据（必填）
+     * imageType：图片类型（必填）
+     * rectPos：图片位置 { fLeft, fRight, fTop, fBottom }，取值 [0,1]
+     * alpha：透明度 [0,1]
+     * @returns {Promise<object>}
+     */
+    JS_SetWaterMarkImage(params: object | null): Promise<object>;
     /**
      * @description 设置全局时间戳
      * @param {number} year, month, day, hour, min, sec, ms：年/月/日/时/分/秒/毫秒
