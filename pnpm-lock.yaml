@@ -21,8 +21,8 @@ importers:
         specifier: 2.0.0
         version: 2.0.0
       '@ezuikit/utils-tools':
-        specifier: ^2.0.7
-        version: 2.0.7
+        specifier: ^2.0.9
+        version: 2.0.9
       dayjs:
         specifier: ^1.11.10
         version: 1.11.23
@@ -53,8 +53,8 @@ packages:
   '@ezuikit/utils-service@2.0.0':
     resolution: {integrity: sha512-CBCPMw3uwd/vCh/YS+fZPMJrmg0LmCPO5bVkAon6VxjJJxwpVNcVb15sNbZyGR52JYt3wq7UEhnqHMprHnCSEA==}
 
-  '@ezuikit/utils-tools@2.0.7':
-    resolution: {integrity: sha512-phxKRP17FunG0cwLLK951V18x96EzwO5XSfZ+FfI4jv8agbujV5HtY709lpXM0H5j4XC7pZryT70wjdRFASQgA==}
+  '@ezuikit/utils-tools@2.0.9':
+    resolution: {integrity: sha512-GokUQiYNHG8cJkqU4OAJD2Dm3pXiFHvlYTYm+aw3HMTAdeERSpAgGQuWX6PHhy9GaaOiZunC5c1oRfQPnZfyfQ==}
 
   dayjs@1.11.23:
     resolution: {integrity: sha512-QDTCU0M0MxR3hQfnlDJfwekQiaanm1ubOD231u73WBckQ/fsamwRLiE2GBz6D3a/xF1NgfiDLJjXBa1hYOYTtQ==}
@@ -77,7 +77,7 @@ snapshots:
 
   '@ezuikit/player-plugin-record@9.3.0-beta.1':
     dependencies:
-      '@ezuikit/utils-tools': 2.0.7
+      '@ezuikit/utils-tools': 2.0.9
 
   '@ezuikit/utils-i18n@2.0.1':
     dependencies:
@@ -87,9 +87,9 @@ snapshots:
 
   '@ezuikit/utils-service@2.0.0':
     dependencies:
-      '@ezuikit/utils-tools': 2.0.7
+      '@ezuikit/utils-tools': 2.0.9
 
-  '@ezuikit/utils-tools@2.0.7': {}
+  '@ezuikit/utils-tools@2.0.9': {}
 
   dayjs@1.11.23: {}
 
